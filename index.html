@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b7fb8">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="Pedí tu bizcocho o factura y retiralo en el recreo. I.P.E.T. 411, Noetinger.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Buffet 411">
+<title>Buffet 411 · IPET 411</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Paleta tomada del logo del IPET 411 ===== */
+:root{
+  --verde:#2e9e4f; --verde-osc:#1f7a3a; --verde-cl:#e6f5ea;
+  --azul:#1b7fb8;  --azul-osc:#135f8c;  --azul-cl:#e4f1f8;
+  --tinta:#13232f; --gris:#5d6b76; --linea:#e1e8ec;
+  --fondo:#f3f7f6; --blanco:#fff;
+  --ambar:#b7791f; --ambar-cl:#fdf3dc; --rojo:#c53030; --rojo-cl:#fde8e8;
+  --radio:18px;
+  --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--fondo);color:var(--tinta);font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px}
+body{min-height:100dvh}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer;border:0}
+input,select{font:inherit}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px}
+
+/* ===== Pantalla de ingreso ===== */
+#authScreen{padding:calc(var(--sat) + 28px) 0 40px;
+  background:linear-gradient(180deg,var(--verde-cl) 0,var(--fondo) 280px);min-height:100dvh}
+.hero{text-align:center;margin-bottom:18px}
+.hero img{width:92px;height:auto;display:block;margin:0 auto 8px}
+.hero .logo-fb{display:none;width:72px;height:72px;margin:0 auto 8px;border-radius:20px;background:var(--azul);color:#fff;font-weight:700;font-size:22px;align-items:center;justify-content:center}
+.hero h1{margin:0;font-size:26px;font-weight:700}
+.hero p{margin:2px 0 0;color:var(--gris);font-size:13px}
+.card{background:var(--blanco);border-radius:var(--radio);padding:18px;box-shadow:0 2px 14px rgba(19,35,47,.07)}
+.tabs{display:flex;background:var(--fondo);border-radius:12px;padding:4px;margin-bottom:14px}
+.tabs button{flex:1;padding:9px;border-radius:9px;background:none;color:var(--gris);font-weight:600}
+.tabs button.on{background:var(--blanco);color:var(--azul-osc);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+label{display:block;font-size:12px;font-weight:600;color:var(--gris);margin:12px 0 5px}
+input[type=text],input[type=password],select{width:100%;padding:12px 14px;border:1.5px solid var(--linea);border-radius:12px;background:#fff;color:var(--tinta);outline:none}
+input:focus,select:focus{border-color:var(--azul)}
+.hint{font-size:11.5px;color:var(--gris);margin-top:4px}
+.btn{display:block;width:100%;padding:14px;border-radius:14px;font-weight:600;color:#fff;background:var(--verde);margin-top:16px;transition:transform .08s}
+.btn:active{transform:scale(.98)}
+.btn.azul{background:var(--azul)}
+.btn.sec{background:var(--azul-cl);color:var(--azul-osc)}
+.btn.rojo{background:var(--rojo-cl);color:var(--rojo)}
+.btn:disabled{background:#c9d3d9;color:#fff;cursor:not-allowed}
+.msg{font-size:13px;padding:10px 12px;border-radius:10px;margin-top:12px}
+.msg.err{background:var(--rojo-cl);color:var(--rojo)}
+.msg.ok{background:var(--verde-cl);color:var(--verde-osc)}
+.aviso{font-size:11.5px;color:var(--gris);background:var(--fondo);border-radius:10px;padding:10px 12px;margin-top:14px;line-height:1.5}
+.link{background:none;color:var(--azul-osc);font-weight:600;text-decoration:underline;padding:8px 0;margin-top:6px}
+
+/* ===== App principal ===== */
+header.top{position:sticky;top:0;z-index:20;background:var(--azul);color:#fff;padding:calc(var(--sat) + 10px) 0 12px}
+header.top .wrap{display:flex;align-items:center;gap:10px}
+header.top img{width:38px;height:44px;object-fit:contain;background:#fff;border-radius:10px;padding:3px}
+header.top .logo-fb2{display:none;width:38px;height:38px;border-radius:10px;background:#fff;color:var(--azul);font-weight:700;font-size:12px;align-items:center;justify-content:center}
+header.top .t{flex:1;min-width:0}
+header.top .t b{display:block;font-size:15px}
+header.top .t span{font-size:12px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+main{padding:14px 0 calc(150px + var(--sab))}
+h2{font-size:15px;margin:18px 0 8px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;min-width:64px;text-align:center;padding:9px 10px;border-radius:14px;background:#fff;border:1.5px solid var(--linea);color:var(--tinta);line-height:1.2}
+.chip small{display:block;font-size:11px;color:var(--gris)}
+.chip b{font-size:16px}
+.chip.on{background:var(--azul);border-color:var(--azul);color:#fff}
+.chip.on small{color:#d6ebf6}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+.turnos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.turno{padding:12px;border-radius:14px;background:#fff;border:1.5px solid var(--linea);text-align:left;color:var(--tinta)}
+.turno b{display:block;font-size:14px}
+.turno span{font-size:12px;color:var(--gris)}
+.turno em{display:block;font-style:normal;font-size:11px;color:var(--verde-osc);margin-top:4px;font-weight:600}
+.turno.on{border-color:var(--verde);background:var(--verde-cl)}
+.turno:disabled{opacity:.45;cursor:not-allowed}
+.nota{font-size:12px;color:var(--ambar);background:var(--ambar-cl);border-radius:10px;padding:9px 12px;margin-top:10px;line-height:1.45}
+
+.prod{display:flex;align-items:center;gap:12px;background:#fff;border-radius:var(--radio);padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.05)}
+.prod .em{width:56px;height:56px;border-radius:16px;background:var(--verde-cl);display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.prod .inf{flex:1;min-width:0}
+.prod .inf b{display:block;font-size:15px}
+.prod .pr{color:var(--azul-osc);font-weight:700}
+.prod .st{font-size:12px;color:var(--gris)}
+.prod .st.poco{color:var(--ambar);font-weight:600}
+.prod .st.cero{color:var(--rojo);font-weight:600}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:34px;height:34px;border-radius:50%;background:var(--azul-cl);color:var(--azul-osc);font-size:20px;font-weight:700;line-height:1}
+.qty button:disabled{opacity:.35}
+.qty span{min-width:20px;text-align:center;font-weight:700}
+
+/* carrito flotante */
+#cartBar{position:fixed;left:0;right:0;bottom:calc(64px + var(--sab));z-index:30;padding:0 16px}
+#cartBar button{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:520px;margin:0 auto;padding:14px 18px;border-radius:16px;background:var(--verde);color:#fff;font-weight:600;box-shadow:0 8px 24px rgba(31,122,58,.4)}
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--linea);padding-bottom:var(--sab)}
+nav.bottom .in{display:flex;max-width:520px;margin:0 auto}
+nav.bottom button{flex:1;padding:9px 0 8px;background:none;color:var(--gris);font-size:11px;font-weight:600}
+nav.bottom button i{display:block;font-style:normal;font-size:20px}
+nav.bottom button.on{color:var(--azul-osc)}
+
+/* pedidos y estados */
+.ord{background:#fff;border-radius:var(--radio);padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.05)}
+.ord .r1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.code{font-weight:700;font-size:22px;letter-spacing:3px;color:var(--azul-osc)}
+.tag{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.tag.pendiente{background:var(--ambar-cl);color:var(--ambar)}
+.tag.listo{background:var(--verde-cl);color:var(--verde-osc)}
+.tag.retirado{background:var(--azul-cl);color:var(--azul-osc)}
+.tag.cancelado,.tag.noretirado{background:var(--rojo-cl);color:var(--rojo)}
+.ord .d{font-size:12.5px;color:var(--gris);margin-top:6px;line-height:1.5}
+.ord .acc{display:flex;gap:8px;margin-top:10px}
+.ord .acc .btn{margin-top:0;padding:10px;font-size:13px}
+.vacio{text-align:center;color:var(--gris);padding:40px 10px}
+.vacio b{display:block;font-size:34px;margin-bottom:6px}
+.reglas li{margin-bottom:8px;line-height:1.5}
+
+/* hoja inferior (checkout / ticket) */
+#overlay{position:fixed;inset:0;z-index:60;background:rgba(19,35,47,.55);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:18px 18px calc(18px + var(--sab));max-height:92dvh;overflow-y:auto}
+.sheet h3{margin:0 0 4px;font-size:18px}
+.line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--linea);font-size:14px}
+.line.tot{font-weight:700;font-size:16px;border:0}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.pay button{padding:12px;border-radius:14px;background:#fff;border:1.5px solid var(--linea);color:var(--tinta);font-weight:600;text-align:center}
+.pay button small{display:block;font-weight:400;color:var(--gris);font-size:11px}
+.pay button.on{border-color:var(--verde);background:var(--verde-cl)}
+.pay button:disabled{opacity:.45}
+.alias{background:var(--azul-cl);border-radius:14px;padding:12px;margin-top:10px;font-size:13px;line-height:1.55}
+.alias b{font-size:16px;word-break:break-all}
+.alias .cp{display:inline-block;margin-top:6px;padding:7px 14px;border-radius:10px;background:var(--azul);color:#fff;font-weight:600;font-size:12.5px}
+.ticket{text-align:center}
+.ticket .ok{width:54px;height:54px;border-radius:50%;background:var(--verde);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.ticket .big{font-size:44px;font-weight:700;letter-spacing:8px;color:var(--azul-osc);margin:8px 0 2px;padding-left:8px}
+.ticket .box{background:var(--fondo);border-radius:14px;padding:12px;margin-top:12px;text-align:left;font-size:13.5px;line-height:1.6}
+
+#toast{position:fixed;left:50%;bottom:calc(130px + var(--sab));transform:translateX(-50%);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88%;text-align:center}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ============ INGRESO / REGISTRO ============ -->
+<section id="authScreen" hidden>
+  <div class="wrap">
+    <div class="hero">
+      <img src="img/logo.png" alt="IPET 411" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="logo-fb">411</div>
+      <h1>Buffet 411</h1>
+      <p>I.P.E.T. 411 · Noetinger, Córdoba</p>
+    </div>
+    <div class="card">
+      <div class="tabs">
+        <button id="tabIn" class="on" type="button">Ingresar</button>
+        <button id="tabUp" type="button">Crear cuenta</button>
+      </div>
+
+      <form id="formIn" autocomplete="on">
+        <label for="inUser">Usuario</label>
+        <input id="inUser" type="text" autocapitalize="none" autocomplete="username" required>
+        <label for="inPass">Contraseña</label>
+        <input id="inPass" type="password" autocomplete="current-password" required>
+        <div id="inMsg"></div>
+        <button class="btn azul" type="submit">Ingresar</button>
+        <div id="forgotBox" hidden>
+          <button class="link" id="btnForgot" type="button">Olvidé mi contraseña</button>
+        </div>
+      </form>
+
+      <form id="formUp" hidden autocomplete="off">
+        <label for="upName">Nombre y apellido</label>
+        <input id="upName" type="text" maxlength="40" required>
+        <label for="upCurso">Curso</label>
+        <input id="upCurso" type="text" maxlength="12" placeholder="Ej: 4° 2°" required>
+        <label for="upUser">Nombre de usuario</label>
+        <input id="upUser" type="text" maxlength="20" autocapitalize="none" placeholder="Ej: juan.perez" required>
+        <div class="hint">De 3 a 20 caracteres: letras, números, punto o guion bajo. Si ya está en uso, te avisamos.</div>
+        <label for="upPass">Contraseña</label>
+        <input id="upPass" type="password" minlength="6" autocomplete="new-password" required>
+        <div class="hint">Mínimo 6 caracteres.</div>
+        <div id="upMsg"></div>
+        <button class="btn" type="submit">Crear cuenta</button>
+        <div class="aviso">🔒 Para que el buffet funcione se guardan tu nombre, curso, tus pedidos y algunas acciones dentro de la app (registro, ingreso, pedidos y cancelaciones). Solo las ve el personal autorizado.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<section id="mainScreen" hidden>
+  <header class="top">
+    <div class="wrap">
+      <img src="img/logo.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="logo-fb2">411</div>
+      <div class="t"><b>Buffet 411</b><span id="hdrUser"></span></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="viewPedir"></div>
+    <div id="viewOrders" hidden></div>
+    <div id="viewInfo" hidden></div>
+  </main>
+
+  <div id="cartBar" hidden><button id="btnCart" type="button"></button></div>
+
+  <nav class="bottom"><div class="in">
+    <button data-tab="pedir" class="on" type="button"><i>🥐</i>Pedir</button>
+    <button data-tab="orders" type="button"><i>🎟️</i>Mis pedidos</button>
+    <button data-tab="info" type="button"><i>ℹ️</i>Info</button>
+  </div></nav>
+</section>
+
+<div id="overlay" hidden><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* =====================================================================
+   BUFFET 411 · IPET 411 — App de alumnos
+   ---------------------------------------------------------------------
+   Por ahora los datos viven en localStorage (capa DB). Cuando se conecte
+   Firebase, solo hay que reemplazar el objeto DB (ver más abajo) y las
+   funciones que lo usan pasan a ser asíncronas.
+   ===================================================================== */
+
+/* ---------- CONFIGURACIÓN ---------- */
+const TZ = 'America/Argentina/Cordoba';   // la escuela está en Argentina
+const TURNOS = [
+  { id: 1, nombre: '1° recreo', ini: '08:50', fin: '09:00' },
+  { id: 2, nombre: '2° recreo', ini: '10:20', fin: '10:30' }
+];
+const CIERRE_MIN = 10;      // los pedidos de un recreo se cierran 10 min antes de que empiece
+const MAX_UNIDADES = 10;    // tope de unidades por pedido
+const STOCK_BAJO = 5;       // desde acá se muestra "¡Últimas unidades!"
+const ALERTA_FALLOS = 3;    // intentos fallidos para mostrar "Olvidé mi contraseña"
+
+// Catálogo base: SOLO bizcochos y facturas. Más adelante el editor del buffet
+// (editor-buffet-ipet411.html) guardará acá productos nuevos, incluso bebidas.
+const CONFIG_BASE = {
+  alias: '',          // alias de Mercado Pago (lo carga el editor del buffet)
+  titular: '',
+  productos: [
+    { id: 'bizcochos', nombre: 'Bizcochos', emoji: '🥨', precio: 500,  stock: 60, disponible: true, cat: 'comida' },
+    { id: 'facturas',  nombre: 'Facturas',  emoji: '🥐', precio: 1000, stock: 60, disponible: true, cat: 'comida' }
+  ]
+};
+
+/* ---------- CAPA DE DATOS (reemplazable por Firebase) ---------- */
+const memoria = {};   // respaldo si el navegador bloquea localStorage
+const DB = {
+  get(clave, def) {
+    try { const v = localStorage.getItem(clave); return v ? JSON.parse(v) : def; }
+    catch (e) { return clave in memoria ? JSON.parse(memoria[clave]) : def; }
+  },
+  set(clave, valor) {
+    const txt = JSON.stringify(valor);
+    try { localStorage.setItem(clave, txt); } catch (e) { memoria[clave] = txt; }
+  }
+};
+const K = { usuarios:'b411_users', sesion:'b411_session', pedidos:'b411_orders',
+            config:'b411_config', actividad:'b411_activity', solicitudes:'b411_requests' };
+
+const getConfig  = () => DB.get(K.config, CONFIG_BASE);
+const getPedidos = () => DB.get(K.pedidos, []);
+const getUsuarios = () => DB.get(K.usuarios, {});
+
+/* ---------- UTILIDADES ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => '$' + Number(n).toLocaleString('es-AR');
+const hm = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+const DIAS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const DIAS_L = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+function toast(txt) {
+  const t = $('toast'); t.textContent = txt; t.classList.add('on');
+  clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('on'), 2400);
+}
+
+/* Hora actual en Argentina, sin depender de la zona del celular */
+function ahora() {
+  const p = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year:'numeric', month:'2-digit',
+    day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false }).formatToParts(new Date());
+  const g = t => p.find(x => x.type === t).value;
+  return { fecha: `${g('year')}-${g('month')}-${g('day')}`, min: (Number(g('hour')) % 24) * 60 + Number(g('minute')) };
+}
+const dObj = f => new Date(f + 'T12:00:00Z');
+const diaSemana = f => dObj(f).getUTCDay();
+function sumarDias(f, n) { const d = dObj(f); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+function fechaLarga(f) { const d = dObj(f); return `${DIAS_L[d.getUTCDay()]} ${d.getUTCDate()} de ${MESES[d.getUTCMonth()]}`; }
+
+/* ¿Se puede pedir todavía para ese día y recreo? (días y turnos pasados quedan bloqueados) */
+function turnoAbierto(fecha, turnoId) {
+  const n = ahora();
+  const t = TURNOS.find(x => x.id === turnoId);
+  if (diaSemana(fecha) === 0 || diaSemana(fecha) === 6) return false;
+  if (fecha < n.fecha) return false;
+  if (fecha > n.fecha) return true;
+  return n.min < hm(t.ini) - CIERRE_MIN;
+}
+/* Próximos 5 días hábiles (lunes a viernes) con al menos un recreo abierto */
+function diasDisponibles() {
+  const n = ahora(); const out = []; let f = n.fecha;
+  for (let i = 0; i < 20 && out.length < 5; i++, f = sumarDias(f, 1)) {
+    if (diaSemana(f) === 0 || diaSemana(f) === 6) continue;
+    if (TURNOS.some(t => turnoAbierto(f, t.id))) out.push(f);
+  }
+  return out;
+}
+function etiquetaDia(f) {
+  const n = ahora();
+  if (f === n.fecha) return 'Hoy';
+  if (f === sumarDias(n.fecha, 1)) return 'Mañana';
+  return DIAS[diaSemana(f)];
+}
+
+/* ---------- STOCK DIARIO ---------- */
+/* El stock del día = stock del producto − unidades de pedidos NO cancelados de esa fecha.
+   Si un pedido se cancela, el stock se libera solo. */
+function stockLibre(fecha, prod) {
+  const usado = getPedidos().filter(o => o.fecha === fecha && o.estado !== 'cancelado')
+    .reduce((s, o) => s + o.items.filter(i => i.id === prod.id).reduce((a, i) => a + i.cant, 0), 0);
+  return Math.max(0, prod.stock - usado);
+}
+
+/* ---------- ACTIVIDAD (solo acciones importantes, no cada toque) ---------- */
+function registrar(usuario, accion, detalle) {
+  const lista = DB.get(K.actividad, []);
+  lista.push({ usuario, accion, detalle: detalle || '', ts: Date.now() });
+  DB.set(K.actividad, lista.slice(-1000));
+}
+
+/* ---------- CONTRASEÑAS (hash con sal; en Firebase lo hace Authentication) ---------- */
+async function hashPass(pass, sal) {
+  const datos = new TextEncoder().encode(sal + ':' + pass);
+  if (window.crypto && crypto.subtle) {
+    const buf = await crypto.subtle.digest('SHA-256', datos);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  let h = 5381; for (const b of datos) h = ((h << 5) + h + b) | 0;   // respaldo simple
+  return 'f' + (h >>> 0).toString(16);
+}
+const nuevaSal = () => Array.from(crypto.getRandomValues(new Uint8Array(8))).map(b => b.toString(16).padStart(2, '0')).join('');
+
+/* ---------- ESTADO ---------- */
+const S = { user: null, tab: 'pedir', fecha: null, turno: null, carrito: {}, metodo: 'efectivo', fallos: {} };
+
+/* =====================================================================
+   REGISTRO E INGRESO
+   ===================================================================== */
+function mostrarAuth(modo) {
+  $('formIn').hidden = modo !== 'in'; $('formUp').hidden = modo !== 'up';
+  $('tabIn').classList.toggle('on', modo === 'in'); $('tabUp').classList.toggle('on', modo === 'up');
+  $('inMsg').innerHTML = ''; $('upMsg').innerHTML = '';
+}
+$('tabIn').onclick = () => mostrarAuth('in');
+$('tabUp').onclick = () => mostrarAuth('up');
+
+$('formUp').addEventListener('submit', async e => {
+  e.preventDefault();
+  const nombre = $('upName').value.trim().replace(/\s+/g, ' ');
+  const curso = $('upCurso').value.trim();
+  const usuario = $('upUser').value.trim().toLowerCase();
+  const pass = $('upPass').value;
+  const msg = t => $('upMsg').innerHTML = `<div class="msg err">${esc(t)}</div>`;
+
+  if (nombre.length < 3) return msg('Escribí tu nombre y apellido.');
+  if (!/^[a-z0-9._]{3,20}$/.test(usuario)) return msg('El usuario debe tener de 3 a 20 caracteres: letras, números, punto o guion bajo (sin espacios).');
+  if (pass.length < 6) return msg('La contraseña debe tener al menos 6 caracteres.');
+
+  const usuarios = getUsuarios();
+  if (usuarios[usuario]) {   // usuario único: si ya existe, no se puede usar
+    const sug = [usuario + Math.floor(10 + Math.random() * 90), usuario + '.' + (new Date().getFullYear() % 100), usuario + '_411'];
+    return msg(`El usuario "${usuario}" ya está en uso. Probá con: ${sug.join(', ')}`);
+  }
+  const sal = nuevaSal();
+  usuarios[usuario] = { usuario, nombre, curso, sal, hash: await hashPass(pass, sal), creado: Date.now(), ultimo: Date.now(), estado: 'activo' };
+  DB.set(K.usuarios, usuarios);
+  registrar(usuario, 'registro', `${nombre} · ${curso}`);
+  iniciarSesion(usuario);
+});
+
+$('formIn').addEventListener('submit', async e => {
+  e.preventDefault();
+  const usuario = $('inUser').value.trim().toLowerCase();
+  const pass = $('inPass').value;
+  const msg = t => $('inMsg').innerHTML = `<div class="msg err">${esc(t)}</div>`;
+  const u = getUsuarios()[usuario];
+
+  if (u && u.estado === 'suspendido') return msg('Tu cuenta está suspendida. Hablá con el buffet o con la dirección.');
+  if (u && u.liberada) return msg('Tu cuenta fue liberada. Creá una contraseña nueva desde "Olvidé mi contraseña".');
+
+  if (!u || (await hashPass(pass, u.sal)) !== u.hash) {
+    S.fallos[usuario] = (S.fallos[usuario] || 0) + 1;
+    if (S.fallos[usuario] >= ALERTA_FALLOS) {
+      $('forgotBox').hidden = false;
+      registrar(usuario, 'intento_fallido', `${S.fallos[usuario]} intentos`);
+    }
+    return msg('Usuario o contraseña incorrectos.');
+  }
+  S.fallos[usuario] = 0;
+  u.ultimo = Date.now();
+  const usuarios = getUsuarios(); usuarios[usuario] = u; DB.set(K.usuarios, usuarios);
+  registrar(usuario, 'ingreso');
+  iniciarSesion(usuario);
+});
+
+/* "Olvidé mi contraseña": deja una solicitud para que el administrador verifique en persona */
+$('btnForgot').onclick = () => {
+  const usuario = $('inUser').value.trim().toLowerCase();
+  const u = getUsuarios()[usuario];
+  if (!u) { $('inMsg').innerHTML = '<div class="msg err">Escribí tu nombre de usuario arriba para pedir ayuda.</div>'; return; }
+  const sol = DB.get(K.solicitudes, []);
+  if (!sol.some(s => s.usuario === usuario && s.estado === 'pendiente'))
+    sol.push({ usuario, nombre: u.nombre, curso: u.curso, ts: Date.now(), estado: 'pendiente' });
+  DB.set(K.solicitudes, sol);
+  registrar(usuario, 'solicitud_ayuda');
+  $('inMsg').innerHTML = '<div class="msg ok">Listo, avisamos a la administración. Acercate para que verifiquen que sos vos y te liberen la cuenta.</div>';
+};
+
+function iniciarSesion(usuario) {
+  S.user = getUsuarios()[usuario];
+  DB.set(K.sesion, usuario);
+  S.carrito = {}; S.tab = 'pedir'; S.fecha = null; S.turno = null;
+  $('authScreen').hidden = true; $('mainScreen').hidden = false;
+  $('hdrUser').textContent = `${S.user.nombre} · ${S.user.curso}`;
+  cambiarTab('pedir');
+}
+function cerrarSesion() {
+  registrar(S.user.usuario, 'cierre_sesion');
+  DB.set(K.sesion, null); S.user = null; S.carrito = {};
+  $('overlay').hidden = true; $('mainScreen').hidden = true; $('authScreen').hidden = false;
+  $('formIn').reset(); $('formUp').reset(); $('forgotBox').hidden = true; mostrarAuth('in');
+}
+
+/* =====================================================================
+   NAVEGACIÓN
+   ===================================================================== */
+document.querySelectorAll('nav.bottom button').forEach(b => b.onclick = () => cambiarTab(b.dataset.tab));
+function cambiarTab(tab) {
+  S.tab = tab;
+  document.querySelectorAll('nav.bottom button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  $('viewPedir').hidden = tab !== 'pedir'; $('viewOrders').hidden = tab !== 'orders'; $('viewInfo').hidden = tab !== 'info';
+  if (tab === 'pedir') renderPedir(); if (tab === 'orders') renderPedidos(); if (tab === 'info') renderInfo();
+  actualizarCarrito(); window.scrollTo(0, 0);
+}
+
+/* =====================================================================
+   PEDIR: fecha, recreo y menú
+   ===================================================================== */
+function renderPedir() {
+  const dias = diasDisponibles();
+  const v = $('viewPedir');
+  if (!dias.length) {
+    v.innerHTML = '<div class="vacio"><b>😴</b>Por hoy el buffet ya cerró los pedidos.<br>Volvé el próximo día de clases.</div>';
+    return;
+  }
+  if (!S.fecha || !dias.includes(S.fecha)) S.fecha = dias[0];
+  if (!S.turno || !turnoAbierto(S.fecha, S.turno)) { const t = TURNOS.find(t => turnoAbierto(S.fecha, t.id)); S.turno = t ? t.id : null; }
+
+  const cfg = getConfig();
+  const prods = cfg.productos.filter(p => p.disponible);
+
+  v.innerHTML = `
+    <h2>1 · ¿Qué día retirás?</h2>
+    <div class="chips">${dias.map(f => `
+      <button type="button" class="chip ${f === S.fecha ? 'on' : ''}" data-fecha="${f}">
+        <small>${etiquetaDia(f)}</small><b>${dObj(f).getUTCDate()}</b><small>${DIAS[diaSemana(f)]} ${MESES[dObj(f).getUTCMonth()]}</small>
+      </button>`).join('')}</div>
+
+    <h2>2 · ¿En qué recreo?</h2>
+    <div class="turnos">${TURNOS.map(t => `
+      <button type="button" class="turno ${t.id === S.turno ? 'on' : ''}" data-turno="${t.id}" ${turnoAbierto(S.fecha, t.id) ? '' : 'disabled'}>
+        <b>${t.nombre}</b><span>${t.ini} a ${t.fin} hs</span>
+        ${t.id === 2 ? '<em>Última oportunidad</em>' : ''}
+        ${turnoAbierto(S.fecha, t.id) ? '' : '<em style="color:var(--rojo)">Cerrado</em>'}
+      </button>`).join('')}</div>
+    <div class="nota">⏰ El 2° recreo es la <b>2ª y última oportunidad</b> para retirar: si pediste para el 1°, podés retirar hasta las 10:30. Después de esa hora el buffet no vende más. Los pedidos se cierran ${CIERRE_MIN} min antes de cada recreo.</div>
+
+    <h2>3 · Elegí lo que querés</h2>
+    ${prods.map(p => {
+      const libre = stockLibre(S.fecha, p), cant = S.carrito[p.id] || 0;
+      const cls = libre === 0 ? 'cero' : libre <= STOCK_BAJO ? 'poco' : '';
+      const txt = libre === 0 ? 'Agotado' : libre <= STOCK_BAJO ? `¡Últimas ${libre} unidades!` : `${libre} disponibles`;
+      return `<div class="prod">
+        <div class="em">${esc(p.emoji || '🍽️')}</div>
+        <div class="inf"><b>${esc(p.nombre)}</b><span class="pr">${money(p.precio)}</span><div class="st ${cls}">${txt}</div></div>
+        <div class="qty">
+          <button type="button" data-menos="${p.id}" ${cant ? '' : 'disabled'} aria-label="Quitar">−</button>
+          <span>${cant}</span>
+          <button type="button" data-mas="${p.id}" ${libre - cant > 0 && totalUnidades() < MAX_UNIDADES ? '' : 'disabled'} aria-label="Agregar">+</button>
+        </div></div>`;
+    }).join('')}`;
+
+  v.querySelectorAll('[data-fecha]').forEach(b => b.onclick = () => { S.fecha = b.dataset.fecha; ajustarCarrito(); renderPedir(); actualizarCarrito(); });
+  v.querySelectorAll('[data-turno]').forEach(b => b.onclick = () => { S.turno = Number(b.dataset.turno); renderPedir(); });
+  v.querySelectorAll('[data-mas]').forEach(b => b.onclick = () => { S.carrito[b.dataset.mas] = (S.carrito[b.dataset.mas] || 0) + 1; renderPedir(); actualizarCarrito(); });
+  v.querySelectorAll('[data-menos]').forEach(b => b.onclick = () => {
+    const id = b.dataset.menos; S.carrito[id] = (S.carrito[id] || 1) - 1; if (!S.carrito[id]) delete S.carrito[id];
+    renderPedir(); actualizarCarrito();
+  });
+}
+const totalUnidades = () => Object.values(S.carrito).reduce((a, b) => a + b, 0);
+function lineasCarrito() {
+  const cfg = getConfig();
+  return Object.entries(S.carrito).map(([id, cant]) => {
+    const p = cfg.productos.find(x => x.id === id); return p ? { id, nombre: p.nombre, precio: p.precio, cant } : null;
+  }).filter(Boolean);
+}
+const totalCarrito = () => lineasCarrito().reduce((s, l) => s + l.precio * l.cant, 0);
+/* Si cambia el día, recorta el carrito al stock de ese día */
+function ajustarCarrito() {
+  const cfg = getConfig();
+  for (const id of Object.keys(S.carrito)) {
+    const p = cfg.productos.find(x => x.id === id);
+    const max = p ? stockLibre(S.fecha, p) : 0;
+    if (S.carrito[id] > max) { if (max > 0) S.carrito[id] = max; else delete S.carrito[id]; }
+  }
+}
+function actualizarCarrito() {
+  const n = totalUnidades();
+  $('cartBar').hidden = !(S.tab === 'pedir' && n > 0);
+  $('btnCart').innerHTML = `<span>🛒 Ver pedido (${n})</span><span>${money(totalCarrito())}</span>`;
+}
+$('btnCart').onclick = abrirResumen;
+
+/* =====================================================================
+   RESUMEN, PAGO Y CONFIRMACIÓN
+   ===================================================================== */
+function abrirOverlay(html) { $('sheet').innerHTML = html; $('overlay').hidden = false; }
+function cerrarOverlay() { $('overlay').hidden = true; }
+$('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') cerrarOverlay(); });
+
+function abrirResumen() {
+  const cfg = getConfig(), t = TURNOS.find(x => x.id === S.turno);
+  const lin = lineasCarrito(), hayAlias = !!cfg.alias;
+  if (!hayAlias && S.metodo === 'transferencia') S.metodo = 'efectivo';
+  abrirOverlay(`
+    <h3>Tu pedido</h3>
+    <div class="hint" style="margin-bottom:8px">Retiro: ${fechaLarga(S.fecha)} · ${t.nombre} (${t.ini} a ${t.fin} hs)</div>
+    ${lin.map(l => `<div class="line"><span>${l.cant} × ${esc(l.nombre)}</span><b>${money(l.precio * l.cant)}</b></div>`).join('')}
+    <div class="line tot"><span>Total</span><span>${money(totalCarrito())}</span></div>
+
+    <h2>¿Cómo pagás?</h2>
+    <div class="pay">
+      <button type="button" data-met="efectivo" class="${S.metodo === 'efectivo' ? 'on' : ''}">💵 Efectivo<small>al retirar</small></button>
+      <button type="button" data-met="transferencia" class="${S.metodo === 'transferencia' ? 'on' : ''}" ${hayAlias ? '' : 'disabled'}>📲 Transferencia<small>${hayAlias ? 'Mercado Pago' : 'no disponible aún'}</small></button>
+    </div>
+    <div id="payInfo"></div>
+    <div id="resMsg"></div>
+    <button class="btn" id="btnConfirmar" type="button">Confirmar pedido</button>
+    <button class="btn sec" id="btnVolver" type="button">Seguir eligiendo</button>`);
+  pintarPago(cfg);
+  $('sheet').querySelectorAll('[data-met]').forEach(b => b.onclick = () => { S.metodo = b.dataset.met; abrirResumen(); });
+  $('btnVolver').onclick = cerrarOverlay;
+  $('btnConfirmar').onclick = confirmarPedido;
+}
+function pintarPago(cfg) {
+  const box = $('payInfo');
+  if (S.metodo === 'transferencia') {
+    box.innerHTML = `<div class="alias">Transferí <b>${money(totalCarrito())}</b> al alias:<br><b id="aliasTxt">${esc(cfg.alias)}</b>
+      ${cfg.titular ? `<br><span>Titular: ${esc(cfg.titular)}</span>` : ''}<br>
+      <button class="cp" id="btnCopiar" type="button">Copiar alias</button>
+      <div class="hint">Cuando tengas tu código de ticket, ponelo en el motivo de la transferencia. El buffet confirma el pago en su app antes de entregarte el pedido.</div></div>`;
+    $('btnCopiar').onclick = () => {
+      (navigator.clipboard ? navigator.clipboard.writeText(cfg.alias) : Promise.reject())
+        .then(() => toast('Alias copiado')).catch(() => toast('Mantené apretado el alias para copiarlo'));
+    };
+  } else {
+    box.innerHTML = `<div class="hint" style="margin-top:8px">Pagás ${money(totalCarrito())} en efectivo cuando retirás tu pedido.</div>`;
+  }
+}
+
+function generarCodigo() {
+  const letras = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // sin 0/O/1/I para no confundir
+  const usados = new Set(getPedidos().map(o => o.codigo));
+  let c;
+  do { c = Array.from(crypto.getRandomValues(new Uint8Array(5))).map(b => letras[b % letras.length]).join(''); } while (usados.has(c));
+  return c;
+}
+
+function confirmarPedido() {
+  const msg = t => { $('resMsg').innerHTML = `<div class="msg err">${esc(t)}</div>`; };
+  // Se vuelve a validar todo por si pasó el tiempo o se agotó el stock
+  if (!turnoAbierto(S.fecha, S.turno)) return msg('Ese recreo ya cerró los pedidos. Elegí otro horario.');
+  const cfg = getConfig();
+  for (const l of lineasCarrito()) {
+    const p = cfg.productos.find(x => x.id === l.id);
+    if (!p || !p.disponible) return msg(`${l.nombre} ya no está disponible.`);
+    if (l.cant > stockLibre(S.fecha, p)) return msg(`No alcanza el stock de ${l.nombre}. Ajustá la cantidad.`);
+  }
+  if (S.metodo === 'transferencia' && !cfg.alias) return msg('La transferencia no está disponible. Elegí efectivo.');
+
+  const orden = {
+    id: 'o' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    codigo: generarCodigo(), usuario: S.user.usuario, nombre: S.user.nombre, curso: S.user.curso,
+    fecha: S.fecha, turno: S.turno, items: lineasCarrito(), total: totalCarrito(),
+    metodo: S.metodo,
+    pago: S.metodo === 'transferencia' ? 'a_verificar' : 'por_cobrar',   // lo cambia el panel del buffet
+    estado: 'pendiente',                                                  // pendiente | listo | retirado | cancelado
+    creado: Date.now(), actualizado: Date.now()
+  };
+  const lista = getPedidos(); lista.push(orden); DB.set(K.pedidos, lista);
+  registrar(S.user.usuario, 'pedido', `${orden.codigo} · ${money(orden.total)} · ${orden.fecha} T${orden.turno}`);
+  S.carrito = {}; actualizarCarrito(); renderPedir();
+  mostrarTicket(orden, true);
+}
+
+/* =====================================================================
+   TICKET Y MIS PEDIDOS
+   ===================================================================== */
+function ventanaRetiro(o) {
+  const t = TURNOS.find(x => x.id === o.turno), t2 = TURNOS[1];
+  return o.turno === 1
+    ? `${t.ini} a ${t.fin} hs · 2ª y última oportunidad: ${t2.ini} a ${t2.fin} hs`
+    : `${t.ini} a ${t.fin} hs · última oportunidad`;
+}
+/* Estado visible: un pedido sin retirar cuya ventana ya terminó pasa a "No retirado" */
+function estadoVisible(o) {
+  if (o.estado === 'pendiente' || o.estado === 'listo') {
+    const n = ahora();
+    if (o.fecha < n.fecha || (o.fecha === n.fecha && n.min >= hm(TURNOS[1].fin))) return 'noretirado';
+  }
+  return o.estado;
+}
+const ETQ = { pendiente:'Pendiente', listo:'¡Listo para retirar!', retirado:'Retirado', cancelado:'Cancelado', noretirado:'No retirado' };
+const metodoTxt = o => o.metodo === 'transferencia'
+  ? (o.pago === 'cobrado' ? 'Transferencia · pagada' : 'Transferencia · a verificar')
+  : (o.pago === 'cobrado' ? 'Efectivo · cobrado' : 'Efectivo · pagás al retirar');
+
+function mostrarTicket(o, nuevo) {
+  abrirOverlay(`<div class="ticket">
+    <div class="ok">✓</div>
+    <h3>${nuevo ? '¡Pedido confirmado!' : 'Tu ticket'}</h3>
+    <div class="hint">Mostrá este código en el buffet</div>
+    <div class="big">${esc(o.codigo)}</div>
+    <div class="box">
+      📅 <b>${fechaLarga(o.fecha)}</b><br>
+      🕘 ${ventanaRetiro(o)}<br>
+      ${o.items.map(i => `• ${i.cant} × ${esc(i.nombre)}`).join('<br>')}<br>
+      💰 <b>${money(o.total)}</b> · ${metodoTxt(o)}
+      ${o.metodo === 'transferencia' && o.pago !== 'cobrado' ? `<br><span style="color:var(--ambar)">Poné <b>${esc(o.codigo)}</b> en el motivo de la transferencia.</span>` : ''}
+    </div>
+    <button class="btn azul" id="btnCerrarT" type="button">Listo</button>
+  </div>`);
+  $('btnCerrarT').onclick = () => { cerrarOverlay(); if (nuevo) cambiarTab('orders'); };
+}
+
+function renderPedidos() {
+  const v = $('viewOrders');
+  const mios = getPedidos().filter(o => o.usuario === S.user.usuario).sort((a, b) => b.creado - a.creado);
+  if (!mios.length) { v.innerHTML = '<div class="vacio"><b>🎟️</b>Todavía no hiciste pedidos.<br>Tus códigos van a aparecer acá.</div>'; return; }
+  v.innerHTML = '<h2>Mis pedidos</h2>' + mios.map(o => {
+    const est = estadoVisible(o), puedeCancelar = o.estado === 'pendiente' && turnoAbierto(o.fecha, o.turno);
+    return `<div class="ord">
+      <div class="r1"><span class="code">${esc(o.codigo)}</span><span class="tag ${est}">${ETQ[est]}</span></div>
+      <div class="d">📅 ${fechaLarga(o.fecha)} · ${TURNOS.find(t => t.id === o.turno).nombre}<br>
+        ${o.items.map(i => `${i.cant} × ${esc(i.nombre)}`).join(', ')} · <b>${money(o.total)}</b><br>${metodoTxt(o)}</div>
+      <div class="acc">
+        <button class="btn sec" data-ver="${o.id}" type="button">Ver ticket</button>
+        ${puedeCancelar ? `<button class="btn rojo" data-canc="${o.id}" type="button">Cancelar</button>` : ''}
+      </div></div>`;
+  }).join('');
+  v.querySelectorAll('[data-ver]').forEach(b => b.onclick = () => mostrarTicket(getPedidos().find(o => o.id === b.dataset.ver), false));
+  v.querySelectorAll('[data-canc]').forEach(b => b.onclick = () => cancelarPedido(b.dataset.canc));
+}
+
+/* El alumno solo cancela mientras el pedido siga pendiente y el recreo no haya cerrado */
+function cancelarPedido(id) {
+  const lista = getPedidos(), o = lista.find(x => x.id === id);
+  if (!o || o.estado !== 'pendiente' || !turnoAbierto(o.fecha, o.turno)) { toast('Este pedido ya no se puede cancelar'); renderPedidos(); return; }
+  abrirOverlay(`<h3>¿Cancelar el pedido ${esc(o.codigo)}?</h3>
+    <div class="hint">Se liberan las unidades para otros compañeros. No se puede deshacer.</div>
+    <button class="btn rojo" id="btnSi" type="button">Sí, cancelar</button>
+    <button class="btn sec" id="btnNo" type="button">No, volver</button>`);
+  $('btnNo').onclick = cerrarOverlay;
+  $('btnSi').onclick = () => {
+    o.estado = 'cancelado'; o.actualizado = Date.now(); DB.set(K.pedidos, lista);   // el stock se libera solo
+    registrar(S.user.usuario, 'cancelacion', o.codigo);
+    cerrarOverlay(); toast('Pedido cancelado'); renderPedidos();
+  };
+}
+
+/* =====================================================================
+   INFO
+   ===================================================================== */
+function renderInfo() {
+  $('viewInfo').innerHTML = `
+    <div id="instBox"></div>
+    <h2>Horarios de retiro</h2>
+    <div class="card"><ul class="reglas" style="margin:0;padding-left:18px">
+      <li><b>1° recreo:</b> 08:50 a 09:00 hs</li>
+      <li><b>2° recreo:</b> 10:20 a 10:30 hs · 2ª y <b>última oportunidad</b> para retirar</li>
+      <li>El buffet funciona de lunes a viernes. Después de las 10:30 no se vende más.</li></ul></div>
+    <h2>Reglas</h2>
+    <div class="card"><ul class="reglas" style="margin:0;padding-left:18px">
+      <li>Pedí con tu usuario y mostrá el código de 5 caracteres al retirar.</li>
+      <li>Podés cancelar mientras el pedido esté pendiente y falten más de ${CIERRE_MIN} minutos para el recreo.</li>
+      <li>Si no retirás varias veces, tu cuenta puede suspenderse.</li>
+      <li>Máximo ${MAX_UNIDADES} unidades por pedido.</li></ul></div>
+    <h2>Tu cuenta</h2>
+    <div class="card">${esc(S.user.nombre)} · ${esc(S.user.curso)}<br><span class="hint">Usuario: ${esc(S.user.usuario)}</span>
+      <button class="btn rojo" id="btnSalir" type="button">Cerrar sesión</button></div>`;
+  $('btnSalir').onclick = cerrarSesion;
+  pintarInstalar();
+}
+
+/* ---------- APP INSTALABLE (PWA) ---------- */
+let promptInstalar = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); promptInstalar = e; pintarInstalar(); });
+window.addEventListener('appinstalled', () => { promptInstalar = null; pintarInstalar(); });
+function pintarInstalar() {
+  const box = $('instBox'); if (!box) return;
+  const instalada = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (instalada) { box.innerHTML = ''; return; }
+  if (promptInstalar) {
+    box.innerHTML = '<div class="card"><b>Instalá Buffet 411</b><div class="hint">Queda como una app en tu pantalla de inicio.</div><button class="btn azul" id="btnInst" type="button">Instalar app</button></div>';
+    $('btnInst').onclick = async () => { promptInstalar.prompt(); await promptInstalar.userChoice; promptInstalar = null; pintarInstalar(); };
+  } else if (ios) {
+    box.innerHTML = '<div class="card"><b>Instalá Buffet 411</b><div class="hint">En Safari tocá el botón Compartir y elegí "Agregar a inicio".</div></div>';
+  } else box.innerHTML = '';
+}
+
+/* =====================================================================
+   ARRANQUE
+   ===================================================================== */
+function iniciar() {
+  const guardado = DB.get(K.sesion, null);
+  if (guardado && getUsuarios()[guardado] && getUsuarios()[guardado].estado !== 'suspendido') {
+    S.user = getUsuarios()[guardado];
+    $('mainScreen').hidden = false; $('hdrUser').textContent = `${S.user.nombre} · ${S.user.curso}`; cambiarTab('pedir');
+  } else { $('authScreen').hidden = false; }
+}
+// Refresca estados cuando el alumno vuelve a la app o cuando el buffet cambia algo
+function refrescar() {
+  if (!S.user || $('overlay').hidden === false) return;
+  if (S.tab === 'orders') renderPedidos(); if (S.tab === 'pedir') { renderPedir(); actualizarCarrito(); }
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refrescar(); });
+window.addEventListener('storage', refrescar);
+setInterval(refrescar, 30000);
+iniciar();
+
+// Service worker: permite instalar la app y abrirla rápido (solo funciona con https o localhost)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost'))
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script>
+</body>
+</html>
