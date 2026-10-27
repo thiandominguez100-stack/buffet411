@@ -1,7 +1,7 @@
 /* Buffet 411 · service worker. Cambiá VERSION cada vez que subas cambios a GitHub
    para que los celulares descarguen la versión nueva. */
-const VERSION = 'buffet-411-v3';
-const BASE = ['./', 'index.html', 'manifest.json', 'img/logo.png', 'icons/icon-192.png', 'icons/icon-512.png'];
+const VERSION = 'buffet-411-v4';
+const BASE = ['./', 'index.html', 'manifest.json', 'logo.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(BASE)).then(() => self.skipWaiting()));

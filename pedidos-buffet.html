@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b7fb8">
+<meta name="robots" content="noindex,nofollow">
+<title>Buffet 411 · Pedidos</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--verde:#2e9e4f;--verde-osc:#1f7a3a;--verde-cl:#e6f5ea;--azul:#1b7fb8;--azul-osc:#135f8c;--azul-cl:#e4f1f8;--tinta:#13232f;--gris:#5d6b76;--linea:#e1e8ec;--fondo:#f3f7f6;--ambar:#b7791f;--ambar-cl:#fdf3dc;--rojo:#c53030;--rojo-cl:#fde8e8;--r:16px}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Poppins,system-ui,sans-serif;background:var(--fondo);color:var(--tinta);min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+header{background:var(--azul);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px}
+header img{width:38px;height:38px;border-radius:10px;background:#fff;object-fit:contain}
+header h1{font-size:1.05rem;flex:1}
+.wrap{max-width:760px;margin:auto;padding:14px 16px 40px}
+.card{background:#fff;border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.06)}
+.mut{color:var(--gris);font-size:.78rem}
+input,select{width:100%;padding:12px;border:2px solid var(--linea);border-radius:12px;font:inherit;background:#fff}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.st{background:#fff;border-radius:14px;padding:10px;text-align:center;box-shadow:0 2px 10px rgba(19,35,47,.06)}
+.st b{display:block;font-size:1.15rem}
+.prep{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.prep span{background:var(--ambar-cl);color:var(--ambar);padding:8px 14px;border-radius:12px;font-weight:700}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.code{font-size:1.35rem;font-weight:700;letter-spacing:.12em}
+button{font:600 .82rem Poppins,sans-serif;border:0;border-radius:10px;padding:10px 12px;cursor:pointer;background:var(--azul);color:#fff}
+button.ok{background:var(--verde)}button.am{background:var(--ambar)}button.no{background:#fff;color:var(--rojo);border:2px solid var(--rojo)}button.l{background:none;color:#fff;padding:4px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:.7rem;padding:3px 10px;border-radius:20px;font-weight:600;background:var(--azul-cl);color:var(--azul-osc);margin-left:4px}
+.tag.listo,.tag.cobrado{background:var(--verde-cl);color:var(--verde-osc)}.tag.verificar{background:var(--ambar-cl);color:var(--ambar)}
+.tag.cancelado,.tag.noretirado{background:var(--rojo-cl);color:var(--rojo)}
+#lock{max-width:320px;margin:18vh auto;text-align:center}
+#lock input{text-align:center;font-size:1.6rem;letter-spacing:.5em;margin:14px 0}
+.err{color:var(--rojo);font-size:.85rem;min-height:1.3em}
+</style></head><body>
+<div id="app"></div>
+<script>
+/* ===== Capa de datos: mismas claves que index.html (cambiar por Firebase más adelante) ===== */
+const K={pedidos:'b411_orders',staff:'b411_stafflog'};
+const DB={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+/* ===== Acceso del personal =====
+   El PIN queda visible en el código: frena a curiosos, no es seguridad real.
+   Con Firebase se reemplaza por cuentas de personal. */
+const PIN='1234'; // <-- CAMBIAR antes de usar
+const TURNOS=[{id:1,n:'1° recreo',ini:'08:50',fin:'09:00'},{id:2,n:'2° recreo',ini:'10:20',fin:'10:30'}];
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'$'+Number(n).toLocaleString('es-AR');
+const hm=s=>{const[h,m]=s.split(':').map(Number);return h*60+m};
+const hoy=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const S={fecha:hoy(),turno:'0',q:''};
+let fails=0,lockUntil=0;
+
+function lockScreen(){
+  $('app').innerHTML=`<div id="lock" class="card"><h1 style="font-size:1.15rem">Buffet 411 · Personal</h1><p class="mut">Ingresá el PIN</p>
+  <input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><div class="err" id="err"></div><button style="width:100%" onclick="tryPin()">Entrar</button></div>`;
+  $('pin').addEventListener('keydown',e=>{if(e.key==='Enter')tryPin()});$('pin').focus();
+}
+function tryPin(){
+  if(Date.now()<lockUntil){$('err').textContent='Esperá unos segundos.';return}
+  if($('pin').value===PIN){fails=0;sessionStorage.setItem('b411_staff','1');panel();return}
+  fails++;$('pin').value='';
+  if(fails>=3){lockUntil=Date.now()+30000;fails=0;$('err').textContent='Bloqueado 30 segundos.'}else $('err').textContent='PIN incorrecto';
+}
+function salir(){sessionStorage.removeItem('b411_staff');lockScreen()}
+
+/* ===== Gestión de pedidos ===== */
+const lista=()=>DB.get(K.pedidos,[]);
+function cambiar(id,accion){
+  const l=lista(),o=l.find(x=>x.id===id);if(!o)return;
+  if(accion==='cancelar'&&!confirm('¿Cancelar el pedido '+o.codigo+'? Se libera el stock.'))return;
+  if(accion==='listo')o.estado='listo';
+  if(accion==='cobrar'){o.estado='retirado';o.pago='cobrado'}   // retirado y cobrado
+  if(accion==='transf')o.pago='cobrado';                         // transferencia verificada en Mercado Pago
+  if(accion==='cancelar')o.estado='cancelado';
+  o.actualizado=Date.now();DB.set(K.pedidos,l);
+  const log=DB.get(K.staff,[]);log.push({accion,codigo:o.codigo,ts:Date.now()});DB.set(K.staff,log.slice(-500));
+  render();
+}
+/* "No retirado": pedido sin retirar cuya ventana (hasta las 10:30) ya terminó */
+function visible(o){
+  if(o.estado==='pendiente'||o.estado==='listo'){
+    const d=new Date(),n=d.getHours()*60+d.getMinutes();
+    if(o.fecha<hoy()||(o.fecha===hoy()&&n>=hm(TURNOS[1].fin)))return'noretirado';
+  }return o.estado;
+}
+const ETQ={pendiente:'Pendiente',listo:'Listo para retirar',retirado:'Retirado',cancelado:'Cancelado',noretirado:'No retirado'};
+
+/* ===== Vistas ===== */
+function panel(){
+  $('app').innerHTML=`<header><img src="logo.png" alt="" onerror="this.style.display='none'"><h1>Pedidos del buffet</h1><button class="l" onclick="salir()">Salir</button></header><div class="wrap">
+  <div class="f"><div><label class="mut">Fecha</label><input type="date" id="d" value="${S.fecha}"></div>
+  <div><label class="mut">Recreo</label><select id="t"><option value="1">1° · 08:50 a 09:00</option><option value="2">2° · 10:20 a 10:30</option><option value="0">Todos</option></select></div></div>
+  <div id="info" class="mut" style="margin-bottom:10px"></div><div id="sum"></div><input id="q" placeholder="Buscar por nombre, curso o código" style="margin:4px 0 12px"><div id="list"></div></div>`;
+  $('t').value=S.turno;
+  $('d').onchange=e=>{S.fecha=e.target.value||hoy();render()};
+  $('t').onchange=e=>{S.turno=e.target.value;render()};
+  $('q').oninput=e=>{S.q=e.target.value.trim().toLowerCase();render()};
+  render();
+}
+function render(){
+  if(!$('list'))return;
+  const todos=lista(),fechas={};todos.filter(o=>o.estado!=='cancelado').forEach(o=>fechas[o.fecha]=(fechas[o.fecha]||0)+1);
+  const otras=Object.entries(fechas).filter(([f])=>f!==S.fecha).map(([f,n])=>`<a href="#" onclick="S.fecha='${f}';$('d').value='${f}';render();return false">${f.split('-').reverse().join('/')} (${n})</a>`).join(' · ');
+  $('info').innerHTML=`Pedidos guardados en este navegador: <b>${todos.length}</b>${otras?'<br>Otras fechas con pedidos: '+otras:''}${todos.length?'':'<br>Si hiciste un pedido y no aparece, lo hiciste en otro celular o navegador: hasta conectar Firebase cada uno guarda lo suyo.'}`;
+  const all=lista().filter(o=>o.fecha===S.fecha&&(S.turno==='0'||String(o.turno)===S.turno)).sort((a,b)=>a.creado-b.creado);
+  const vivos=all.filter(o=>o.estado!=='cancelado');
+  /* Para preparar: lo que todavía no se retiró */
+  const tot={};vivos.filter(o=>o.estado!=='retirado').forEach(o=>o.items.forEach(i=>tot[i.nombre]=(tot[i.nombre]||0)+i.cant));
+  const prep=Object.entries(tot).map(([n,q])=>`<span>${q} × ${esc(n)}</span>`).join('')||'<span class="mut" style="background:none">Nada para preparar</span>';
+  const cobrado=vivos.filter(o=>o.pago==='cobrado'),porCobrar=vivos.filter(o=>o.pago!=='cobrado');
+  const suma=a=>a.reduce((x,o)=>x+o.total,0);
+  const efe=suma(cobrado.filter(o=>o.metodo!=='transferencia')),tr=suma(cobrado.filter(o=>o.metodo==='transferencia'));
+  $('sum').innerHTML=`<div class="card"><b>Para preparar</b><div class="prep">${prep}</div></div>
+  <div class="grid"><div class="st"><span class="mut">Pedidos</span><b>${vivos.length}</b></div>
+  <div class="st"><span class="mut">Por cobrar</span><b>${money(suma(porCobrar))}</b></div>
+  <div class="st"><span class="mut">Cobrado</span><b style="color:var(--verde-osc)">${money(suma(cobrado))}</b></div></div>
+  <p class="mut" style="margin-bottom:10px">Cobrado: ${money(efe)} en efectivo · ${money(tr)} por transferencia</p>`;
+  const q=S.q,shown=all.filter(o=>!q||[o.nombre,o.curso,o.codigo,o.usuario].some(v=>String(v||'').toLowerCase().includes(q)));
+  $('list').innerHTML=shown.map(o=>{
+    const v=visible(o),activo=o.estado==='pendiente'||o.estado==='listo';
+    const pg=o.pago==='cobrado'?'<span class="tag cobrado">Pagado</span>':o.metodo==='transferencia'?'<span class="tag verificar">Transferencia a verificar</span>':'<span class="tag">Efectivo por cobrar</span>';
+    return `<div class="card"><div class="row"><span class="code">${esc(o.codigo)}</span><span><span class="tag ${v}">${ETQ[v]}</span></span></div>
+    <p style="margin-top:4px"><b>${esc(o.nombre)}</b> · ${esc(o.curso)} · ${money(o.total)} ${pg}</p>
+    <p class="mut">${o.items.map(i=>i.cant+' × '+esc(i.nombre)).join(', ')} · ${TURNOS.find(t=>t.id===o.turno)?.n||''}</p>
+    ${activo?`<div class="acts">
+      ${o.estado==='pendiente'?`<button onclick="cambiar('${o.id}','listo')">Listo para retirar</button>`:''}
+      ${o.metodo==='transferencia'&&o.pago!=='cobrado'?`<button class="am" onclick="cambiar('${o.id}','transf')">Confirmar transferencia</button>`:''}
+      <button class="ok" onclick="cambiar('${o.id}','cobrar')">Retirado y cobrado</button>
+      <button class="no" onclick="cambiar('${o.id}','cancelar')">Cancelar</button></div>`:''}</div>`;
+  }).join('')||'<div class="card mut">No hay pedidos para esta fecha y recreo.</div>';
+}
+window.addEventListener('storage',render);
+setInterval(render,10000);
+sessionStorage.getItem('b411_staff')?panel():lockScreen();
+</script></body></html>

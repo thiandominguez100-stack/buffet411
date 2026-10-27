@@ -3,6 +3,7 @@
   "short_name": "Buffet 411",
   "description": "Pedí bizcochos y facturas y retiralos en el recreo. I.P.E.T. 411, Noetinger.",
   "lang": "es-AR",
+  "id": "./index.html",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -10,8 +11,8 @@
   "background_color": "#ffffff",
   "theme_color": "#1b7fb8",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
