@@ -25,7 +25,7 @@
   --fondo:#f3f7f6; --blanco:#fff;
   --ambar:#b7791f; --ambar-cl:#fdf3dc; --rojo:#c53030; --rojo-cl:#fde8e8;
   --radio:18px;
-  --sat:env(safe-area-inset-top); --sab:env(safe-area-inset-bottom);
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--fondo);color:var(--tinta);font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px}
@@ -71,7 +71,7 @@ header.top .logo-fb2{display:none;width:38px;height:38px;border-radius:10px;back
 header.top .t{flex:1;min-width:0}
 header.top .t b{display:block;font-size:15px}
 header.top .t span{font-size:12px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
-main{padding:14px 0 calc(150px + var(--sab))}
+main.wrap{padding:14px 16px calc(150px + var(--sab))}
 h2{font-size:15px;margin:18px 0 8px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
@@ -147,6 +147,10 @@ nav.bottom button.on{color:var(--azul-osc)}
 .ticket .big{font-size:44px;font-weight:700;letter-spacing:8px;color:var(--azul-osc);margin:8px 0 2px;padding-left:8px}
 .ticket .box{background:var(--fondo);border-radius:14px;padding:12px;margin-top:12px;text-align:left;font-size:13.5px;line-height:1.6}
 
+.inst{background:#fff;border:1.5px solid var(--azul);border-radius:var(--radio);padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.45}
+.inst b{display:block;font-size:14px;color:var(--azul-osc)}
+.inst .btn{margin-top:10px;padding:11px}
+.inst .link{display:block;margin:2px auto 0}
 #toast{position:fixed;left:50%;bottom:calc(130px + var(--sab));transform:translateX(-50%);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88%;text-align:center}
 #toast.on{opacity:1}
 </style>
@@ -162,6 +166,7 @@ nav.bottom button.on{color:var(--azul-osc)}
       <h1>Buffet 411</h1>
       <p>I.P.E.T. 411 · Noetinger, Córdoba</p>
     </div>
+    <div class="instSlot"></div>
     <div class="card">
       <div class="tabs">
         <button id="tabIn" class="on" type="button">Ingresar</button>
@@ -210,6 +215,7 @@ nav.bottom button.on{color:var(--azul-osc)}
   </header>
 
   <main class="wrap">
+    <div class="instSlot"></div>
     <div id="viewPedir"></div>
     <div id="viewOrders" hidden></div>
     <div id="viewInfo" hidden></div>
@@ -457,7 +463,7 @@ function cambiarTab(tab) {
   document.querySelectorAll('nav.bottom button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
   $('viewPedir').hidden = tab !== 'pedir'; $('viewOrders').hidden = tab !== 'orders'; $('viewInfo').hidden = tab !== 'info';
   if (tab === 'pedir') renderPedir(); if (tab === 'orders') renderPedidos(); if (tab === 'info') renderInfo();
-  actualizarCarrito(); window.scrollTo(0, 0);
+  actualizarCarrito(); pintarInstalar(); window.scrollTo(0, 0);
 }
 
 /* =====================================================================
@@ -701,7 +707,10 @@ function cancelarPedido(id) {
    ===================================================================== */
 function renderInfo() {
   $('viewInfo').innerHTML = `
-    <div id="instBox"></div>
+    <h2 style="margin-top:6px">Tu cuenta</h2>
+    <div class="card">${esc(S.user.nombre)} · ${esc(S.user.curso)}<br><span class="hint">Usuario: ${esc(S.user.usuario)}</span>
+      <button class="btn rojo" id="btnSalir" type="button">Cerrar sesión</button></div>
+    <div class="instSlot" data-info></div>
     <h2>Horarios de retiro</h2>
     <div class="card"><ul class="reglas" style="margin:0;padding-left:18px">
       <li><b>1° recreo:</b> 08:50 a 09:00 hs</li>
@@ -712,29 +721,31 @@ function renderInfo() {
       <li>Pedí con tu usuario y mostrá el código de 5 caracteres al retirar.</li>
       <li>Podés cancelar mientras el pedido esté pendiente y falten más de ${CIERRE_MIN} minutos para el recreo.</li>
       <li>Si no retirás varias veces, tu cuenta puede suspenderse.</li>
-      <li>Máximo ${MAX_UNIDADES} unidades por pedido.</li></ul></div>
-    <h2>Tu cuenta</h2>
-    <div class="card">${esc(S.user.nombre)} · ${esc(S.user.curso)}<br><span class="hint">Usuario: ${esc(S.user.usuario)}</span>
-      <button class="btn rojo" id="btnSalir" type="button">Cerrar sesión</button></div>`;
+      <li>Máximo ${MAX_UNIDADES} unidades por pedido.</li></ul></div>`;
   $('btnSalir').onclick = cerrarSesion;
   pintarInstalar();
 }
 
 /* ---------- APP INSTALABLE (PWA) ---------- */
-let promptInstalar = null;
+let promptInstalar = null, instOculto = false;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); promptInstalar = e; pintarInstalar(); });
 window.addEventListener('appinstalled', () => { promptInstalar = null; pintarInstalar(); });
 function pintarInstalar() {
-  const box = $('instBox'); if (!box) return;
   const instalada = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  if (instalada) { box.innerHTML = ''; return; }
-  if (promptInstalar) {
-    box.innerHTML = '<div class="card"><b>Instalá Buffet 411</b><div class="hint">Queda como una app en tu pantalla de inicio.</div><button class="btn azul" id="btnInst" type="button">Instalar app</button></div>';
-    $('btnInst').onclick = async () => { promptInstalar.prompt(); await promptInstalar.userChoice; promptInstalar = null; pintarInstalar(); };
-  } else if (ios) {
-    box.innerHTML = '<div class="card"><b>Instalá Buffet 411</b><div class="hint">En Safari tocá el botón Compartir y elegí "Agregar a inicio".</div></div>';
-  } else box.innerHTML = '';
+  document.querySelectorAll('.instSlot').forEach(box => {
+    const esInfo = box.hasAttribute('data-info');
+    if (instalada || (instOculto && !esInfo)) { box.innerHTML = ''; return; }
+    const txt = promptInstalar ? 'Queda en tu pantalla de inicio como una app, sin abrir el navegador.'
+      : ios ? 'En Safari tocá Compartir (el cuadrado con la flecha) y elegí "Agregar a inicio".'
+      : 'Tocá el menú ⋮ del navegador y elegí "Instalar app" o "Agregar a la pantalla de inicio".';
+    box.innerHTML = `<div class="inst"><b>📲 Instalá Buffet 411</b><span>${txt}</span>
+      <button class="btn azul" data-inst type="button">${promptInstalar ? 'Instalar app' : 'Cómo instalar'}</button>
+      ${esInfo ? '' : '<button class="link" data-no type="button">Ahora no</button>'}</div>`;
+    const bi = box.querySelector('[data-inst]'), bn = box.querySelector('[data-no]');
+    if (bi) bi.onclick = async () => { if (!promptInstalar) { alert(txt); return; } promptInstalar.prompt(); await promptInstalar.userChoice; promptInstalar = null; pintarInstalar(); };
+    if (bn) bn.onclick = () => { instOculto = true; pintarInstalar(); };
+  });
 }
 
 /* =====================================================================
@@ -755,7 +766,7 @@ function refrescar() {
 document.addEventListener('visibilitychange', () => { if (!document.hidden) refrescar(); });
 window.addEventListener('storage', refrescar);
 setInterval(refrescar, 30000);
-iniciar();
+iniciar(); pintarInstalar();
 
 // Service worker: permite instalar la app y abrirla rápido (solo funciona con https o localhost)
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost'))
