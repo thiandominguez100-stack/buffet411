@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d2a40">
+<meta name="robots" content="noindex,nofollow">
+<title>Buffet 411 · Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--verde-osc:#17693a;--verde-cl:#e4f3ea;--azul:#1e6fa8;--azul-osc:#0f4c75;--azul-cl:#e6eff6;--tinta:#0e1a23;--gris:#54626d;--linea:#d3dae0;--fondo:#edf0f3;--ambar:#b7791f;--ambar-cl:#fdf3dc;--rojo:#c53030;--rojo-cl:#fde8e8;--r:3px}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Inter,system-ui,sans-serif;background:var(--fondo);color:var(--tinta);min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+header{background:var(--azul);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px}
+header img{width:38px;height:38px;border-radius:3px;background:#fff;object-fit:contain}
+header h1{font-size:1.05rem;flex:1}
+.wrap{max-width:720px;margin:auto;padding:14px 16px 40px}
+h2{font-size:1rem;margin:16px 0 8px}
+.card{background:#fff;border-radius:3px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.06)}
+.mut{color:var(--gris);font-size:.78rem}
+label{display:block;font-size:.78rem;color:var(--gris);margin:8px 0 3px}
+input,select{width:100%;padding:11px;border:2px solid var(--linea);border-radius:3px;font:inherit;background:#fff}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.em{font-size:1.9rem;width:46px;text-align:center}
+button{font:600 .82rem Inter,sans-serif;border:0;border-radius:3px;padding:10px 12px;cursor:pointer;background:var(--azul);color:#fff}
+button.ok{background:var(--verde-osc)}button.am{background:var(--ambar)}button.no{background:#fff;color:var(--rojo);border:2px solid var(--rojo)}button.l{background:none;color:#fff;padding:4px}
+button.pick{background:var(--azul-cl);font-size:1.2rem;padding:6px 9px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:.7rem;padding:3px 10px;border-radius:3px;font-weight:600;background:var(--verde-cl);color:var(--verde-osc)}
+.tag.ag{background:var(--rojo-cl);color:var(--rojo)}
+.msg{font-size:.82rem;min-height:1.2em;margin-top:6px;color:var(--rojo)}.msg.ok{color:var(--verde-osc)}
+#lock{max-width:320px;margin:18vh auto;text-align:center}
+#lock input{text-align:center;font-size:1.6rem;letter-spacing:.5em;margin:14px 0}
+
+/* ===== Tema sobrio: líneas rectas, tonos fríos y luz sutil ===== */
+@keyframes barrido{0%{background-position:-60% 0,0 0}100%{background-position:160% 0,0 0}}
+@keyframes brillo{0%,100%{text-shadow:0 0 0 rgba(30,111,168,0)}50%{text-shadow:0 0 14px rgba(30,111,168,.55)}}
+@keyframes destello{0%,70%{transform:translateX(-120%) skewX(-20deg)}100%{transform:translateX(420%) skewX(-20deg)}}
+header{background:#0d2a40;position:relative}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,transparent,#5cc3ff,transparent) 0 0/40% 100% no-repeat,rgba(255,255,255,.14);animation:barrido 4.5s linear infinite}
+h2{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--gris);font-weight:700}
+.card,.st{box-shadow:none;border:1px solid var(--linea)}
+.card{border-left:3px solid var(--azul)}
+button{position:relative;overflow:hidden;text-transform:uppercase;letter-spacing:.05em;font-size:.72rem;font-weight:700}
+button:hover:not(.l):not(.pick)::after{content:"";position:absolute;top:0;bottom:0;left:0;width:30%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:destello .9s ease-out 1;pointer-events:none}
+input:focus,select:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(30,111,168,.18),0 0 14px rgba(30,111,168,.3)}
+.code{animation:brillo 3.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+details{margin-top:10px;border-top:1px solid var(--linea);padding-top:8px}details summary{cursor:pointer;font-weight:600;font-size:.78rem;color:var(--gris)}
+button:disabled{opacity:.4;cursor:default}
+</style></head><body>
+<div id="app"></div>
+<script>
+/* ===== Datos: misma clave y formato que index.html (reemplazable por Firebase) ===== */
+const K={config:'b411_config',staff:'b411_stafflog',pin:'b411_editorlock'};
+const CONFIG_BASE={alias:'',titular:'',productos:[
+  {id:'bizcochos',nombre:'Bizcochos',emoji:'🥨',precio:500,stock:60,disponible:true,cat:'comida'},
+  {id:'facturas',nombre:'Facturas',emoji:'🥐',precio:1000,stock:60,disponible:true,cat:'comida'}]};
+const BASE_IDS=['bizcochos','facturas']; // los 2 productos base no se pueden eliminar, solo editar o marcar agotados
+const DB={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+const getCfg=()=>{const c=DB.get(K.config,CONFIG_BASE);c.productos=c.productos||[];return c};
+/* ===== Acceso =====
+   El PIN queda visible en el código (y el repositorio es público): frena a curiosos, no es seguridad real.
+   Con Firebase se reemplaza por cuentas de personal con permisos. */
+const PIN='2468'; // <-- CAMBIAR antes de usar
+const TZ='America/Argentina/Cordoba';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+const money=n=>'$'+Number(n).toLocaleString('es-AR');
+const hoy=()=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(new Date());   // fecha de Argentina
+const fechaCorta=f=>f.split('-').reverse().join('/');
+const EMOJIS=['🥨','🥐','🍪','🥪','🍫','🍎','🥤','🧃','💧','☕','🍰','🍽️'];
+let editId=null;
+
+function lockScreen(){
+  $('app').innerHTML=`<div id="lock" class="card"><h1 style="font-size:1.15rem">Buffet 411 · Editor</h1><p class="mut">Ingresá el PIN</p>
+  <input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="PIN"><div class="msg" id="err"></div><button style="width:100%" onclick="tryPin()">Entrar</button></div>`;
+  $('pin').addEventListener('keydown',e=>{if(e.key==='Enter')tryPin()});$('pin').focus();
+}
+/* El bloqueo se guarda en el navegador: recargar la página no lo reinicia */
+function tryPin(){
+  const l=DB.get(K.pin,{n:0,hasta:0});
+  if(l.hasta>Date.now()){$('err').textContent='Bloqueado. Esperá '+Math.ceil((l.hasta-Date.now())/1000)+' segundos.';return}
+  if($('pin').value===PIN){DB.set(K.pin,{n:0,hasta:0});sessionStorage.setItem('b411_editor','1');panel();return}
+  l.n++;$('pin').value='';
+  if(l.n>=3){l.n=0;l.hasta=Date.now()+30000;$('err').textContent='Bloqueado 30 segundos.'}else $('err').textContent='PIN incorrecto';
+  DB.set(K.pin,l);
+}
+function salir(){sessionStorage.removeItem('b411_editor');lockScreen()}
+function guardar(c,accion){DB.set(K.config,c);const l=DB.get(K.staff,[]);l.push({accion,ts:Date.now()});DB.set(K.staff,l.slice(-500))}
+function aviso(id,t,ok){const e=$(id);if(e){e.textContent=t;e.className='msg'+(ok?' ok':'')}}
+
+/* ===== Alias de Mercado Pago: se pide repetirlo y confirmar, porque un error manda el dinero a otra persona ===== */
+function guardarAlias(){
+  const a=$('alias').value.trim(),a2=$('alias2').value.trim(),t=$('titular').value.trim().slice(0,60),c=getCfg();
+  if(a){
+    if(!/^[A-Za-z0-9.\-]{6,20}$/.test(a))return aviso('aMsg','El alias tiene de 6 a 20 caracteres: letras, números, punto o guion.');
+    if(a!==(c.alias||'')&&a!==a2)return aviso('aMsg','Los dos alias no coinciden. Escribilo otra vez en "Repetí el alias".');
+    if(!t)return aviso('aMsg','Escribí el titular de la cuenta: los alumnos tienen que poder saber a quién transfieren.');
+    if(!confirm('Los alumnos van a transferir a:\n\nAlias: '+a+'\nTitular: '+t+'\n\n¿Es correcto? Un error manda el dinero a otra persona.'))return;
+  }else if(c.alias&&!confirm('¿Borrar el alias? Los alumnos solo van a poder elegir efectivo.'))return;
+  c.alias=a;c.titular=a?t:'';guardar(c,'alias');
+  aviso('aMsg',a?'Alias guardado.':'Alias borrado: la transferencia queda desactivada.',true);
+}
+
+/* ===== Productos ===== */
+function leer(p){ // valida los campos del formulario con prefijo p
+  const nombre=$(p+'n').value.trim().slice(0,30),precio=+$(p+'p').value,stock=+$(p+'s').value;
+  if(nombre.length<2)return{e:'Escribí el nombre del producto.'};
+  if(!Number.isInteger(precio)||precio<1||precio>100000)return{e:'El precio tiene que ser un número entero (sin centavos) entre $1 y $100.000.'};
+  if(!Number.isInteger(stock)||stock<0||stock>999)return{e:'El stock diario tiene que ser un número entero entre 0 y 999.'};
+  return{nombre,precio,stock,emoji:$(p+'e').value.trim().slice(0,4)||'🍽️',cat:$(p+'c').value};
+}
+const repetido=(c,nombre,id)=>c.productos.some(x=>x.id!==id&&norm(x.nombre)===norm(nombre));
+function agregar(){
+  const d=leer('a');if(d.e)return aviso('pMsg',d.e);
+  const c=getCfg();if(repetido(c,d.nombre))return aviso('pMsg','Ya existe un producto con ese nombre.');
+  c.productos.push({id:'p'+Date.now().toString(36),nombre:d.nombre,emoji:d.emoji,precio:d.precio,stock:d.stock,disponible:true,cat:d.cat});
+  guardar(c,'producto_nuevo');pintarProductos();
+  ['an','ap','as'].forEach(i=>$(i).value='');aviso('pMsg','Producto agregado. Ya aparece en la app de los alumnos.',true);
+}
+function guardarEdicion(id){
+  const d=leer('x');if(d.e)return aviso('xMsg',d.e);
+  const c=getCfg(),p=c.productos.find(x=>x.id===id);if(!p)return;
+  if(repetido(c,d.nombre,id))return aviso('xMsg','Ya existe un producto con ese nombre.');
+  Object.assign(p,d);guardar(c,'producto_editado');editId=null;pintarProductos();
+}
+function mutar(id,fn,accion){const c=getCfg(),i=c.productos.findIndex(x=>x.id===id);if(i<0)return;fn(c,i);guardar(c,accion);pintarProductos()}
+/* Stock de un día puntual (por ejemplo, hoy se horneó menos): reemplaza al stock diario solo ese día */
+function guardarFecha(id,card){
+  const f=card.querySelector('.sfd').value,n=+card.querySelector('.sfn').value,m=card.querySelector('.sfm');
+  if(!f||f<hoy()){m.textContent='Elegí una fecha de hoy en adelante.';return}
+  if(!Number.isInteger(n)||n<0||n>999||card.querySelector('.sfn').value===''){m.textContent='El stock tiene que ser un número entero entre 0 y 999.';return}
+  mutar(id,(c,i)=>{c.productos[i].stockFecha=c.productos[i].stockFecha||{};c.productos[i].stockFecha[f]=n},'stock_fecha');
+}
+function nombreProd(id){const p=getCfg().productos.find(x=>x.id===id);return p?p.nombre:''}
+
+const formCampos=(p,v)=>`<label for="${p}n">Nombre</label><input id="${p}n" maxlength="30" value="${esc(v.nombre||'')}" placeholder="Ej: Jugo de naranja">
+  <div class="g2"><div><label for="${p}p">Precio ($)</label><input id="${p}p" type="number" inputmode="numeric" min="1" step="1" value="${v.precio||''}"></div>
+  <div><label for="${p}s">Stock por día</label><input id="${p}s" type="number" inputmode="numeric" min="0" step="1" value="${v.stock??''}"></div></div>
+  <div class="g2"><div><label for="${p}c">Categoría</label><select id="${p}c">${['comida','bebida','otro'].map(x=>`<option ${x===(v.cat||'comida')?'selected':''}>${x}</option>`).join('')}</select></div>
+  <div><label for="${p}e">Emoji</label><input id="${p}e" maxlength="4" value="${esc(v.emoji||'🍽️')}"></div></div>
+  <div class="acts">${EMOJIS.map(e=>`<button type="button" class="pick" data-a="pick" data-p="${p}" data-e="${e}" aria-label="Emoji ${e}">${e}</button>`).join('')}</div>`;
+
+function pintarProductos(){
+  const c=getCfg(),h=hoy(),n=c.productos.length;
+  $('prods').innerHTML=c.productos.map((p,i)=>{
+    if(editId===p.id)return `<div class="card" data-id="${esc(p.id)}"><b>Editar producto</b>${formCampos('x',p)}<div class="msg" id="xMsg"></div>
+      <div class="acts"><button class="ok" data-a="guardaredicion">Guardar</button><button data-a="canceledicion">Cancelar</button></div></div>`;
+    const fechas=Object.entries(p.stockFecha||{}).filter(([f])=>f>=h).sort();
+    return `<div class="card" data-id="${esc(p.id)}"><div class="row"><span class="em">${esc(p.emoji)}</span><div style="flex:1"><b>${esc(p.nombre)}</b><p class="mut">${money(p.precio)} · ${p.stock} por día · ${esc(p.cat)}</p></div><span class="tag ${p.disponible?'':'ag'}">${p.disponible?'Disponible':'Agotado'}</span></div>
+    <div class="acts"><button data-a="editar">Editar</button><button class="am" data-a="alternar">${p.disponible?'Marcar agotado':'Marcar disponible'}</button>
+      <button data-a="subir" ${i===0?'disabled':''} aria-label="Subir">▲</button><button data-a="bajar" ${i===n-1?'disabled':''} aria-label="Bajar">▼</button>
+      ${BASE_IDS.includes(p.id)?'':'<button class="no" data-a="borrar">Eliminar</button>'}</div>
+    <details><summary>Stock de un día puntual${fechas.length?' ('+fechas.length+')':''}</summary>
+      ${fechas.map(([f,v])=>`<div class="row" style="margin-top:6px"><span class="mut">${fechaCorta(f)}: ${v} unidades</span><button class="no" data-a="quitarfecha" data-f="${esc(f)}">Quitar</button></div>`).join('')}
+      <div class="g2" style="margin-top:6px"><input type="date" class="sfd" min="${h}" aria-label="Fecha"><input type="number" class="sfn" inputmode="numeric" min="0" step="1" placeholder="Unidades" aria-label="Unidades ese día"></div>
+      <div class="msg sfm"></div><div class="acts"><button class="ok" data-a="guardarfecha">Guardar para ese día</button></div></details></div>`;
+  }).join('');
+}
+/* Los botones llevan los datos en atributos (data-*), no dentro de código */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,card=t.closest('[data-id]'),id=card&&card.dataset.id;
+  if(a==='pick'){$(t.dataset.p+'e').value=t.dataset.e}
+  else if(a==='editar'){editId=id;pintarProductos()}
+  else if(a==='canceledicion'){editId=null;pintarProductos()}
+  else if(a==='guardaredicion')guardarEdicion(id);
+  else if(a==='alternar')mutar(id,(c,i)=>{c.productos[i].disponible=!c.productos[i].disponible},'disponibilidad');
+  else if(a==='subir')mutar(id,(c,i)=>{if(i>0)c.productos.splice(i-1,0,c.productos.splice(i,1)[0])},'orden');
+  else if(a==='bajar')mutar(id,(c,i)=>{if(i<c.productos.length-1)c.productos.splice(i+1,0,c.productos.splice(i,1)[0])},'orden');
+  else if(a==='borrar'){if(!BASE_IDS.includes(id)&&confirm('¿Eliminar "'+nombreProd(id)+'"? Los pedidos ya hechos se conservan.'))mutar(id,(c,i)=>{c.productos.splice(i,1)},'producto_eliminado')}
+  else if(a==='guardarfecha')guardarFecha(id,card);
+  else if(a==='quitarfecha')mutar(id,(c,i)=>{delete c.productos[i].stockFecha[t.dataset.f]},'stock_fecha');
+});
+
+function panel(){
+  const c=getCfg();
+  /* limpieza: se borran los stocks de días que ya pasaron */
+  const h=hoy();let sucio=false;c.productos.forEach(p=>{if(p.stockFecha)for(const f of Object.keys(p.stockFecha))if(f<h){delete p.stockFecha[f];sucio=true}});if(sucio)DB.set(K.config,c);
+  $('app').innerHTML=`<header><img src="logo.png" alt="" onerror="this.style.display='none'"><h1>Editor del buffet</h1><button class="l" onclick="salir()">Salir</button></header><div class="wrap">
+  <h2>Productos</h2><div id="prods"></div>
+  <h2>Agregar producto</h2><div class="card">${formCampos('a',{})}<div class="msg" id="pMsg"></div><div class="acts"><button class="ok" onclick="agregar()">Agregar a la app</button></div></div>
+  <h2>Transferencias (Mercado Pago)</h2><div class="card">
+  <label for="alias">Alias</label><input id="alias" maxlength="20" value="${esc(c.alias)}" placeholder="Ej: buffet.ipet411" autocapitalize="off" autocomplete="off">
+  <label for="alias2">Repetí el alias</label><input id="alias2" maxlength="20" placeholder="Escribilo otra vez" autocapitalize="off" autocomplete="off">
+  <label for="titular">Titular de la cuenta</label><input id="titular" maxlength="60" value="${esc(c.titular)}" placeholder="Nombre de quien recibe el dinero">
+  <p class="mut" style="margin-top:8px">Si dejás el alias vacío, los alumnos solo pueden elegir efectivo. Se pide repetirlo y confirmar porque un error manda el dinero a otra persona.</p><div class="msg" id="aMsg"></div>
+  <div class="acts"><button class="ok" onclick="guardarAlias()">Guardar alias</button></div></div></div>`;
+  pintarProductos();
+}
+sessionStorage.getItem('b411_editor')?panel():lockScreen();
+</script></body></html>

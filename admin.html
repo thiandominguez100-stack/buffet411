@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d2a40">
+<meta name="robots" content="noindex,nofollow">
+<title>Buffet 411 · Administración</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--verde-osc:#17693a;--verde-cl:#e4f3ea;--azul:#1e6fa8;--azul-osc:#0f4c75;--azul-cl:#e6eff6;--tinta:#0e1a23;--gris:#54626d;--linea:#d3dae0;--fondo:#edf0f3;--ambar:#b7791f;--ambar-cl:#fdf3dc;--rojo:#c53030;--rojo-cl:#fde8e8;--r:3px}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Inter,system-ui,sans-serif;background:var(--fondo);color:var(--tinta);min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+header{background:var(--azul-osc);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px}
+header img{width:38px;height:38px;border-radius:3px;background:#fff;object-fit:contain}
+header h1{font-size:1.05rem;flex:1}
+.wrap{max-width:800px;margin:auto;padding:14px 16px 40px}
+.card{background:#fff;border-radius:3px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.06)}
+.card.tap{cursor:pointer}
+.mut{color:var(--gris);font-size:.78rem}
+input,select{width:100%;padding:11px;border:2px solid var(--linea);border-radius:3px;font:inherit;background:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px;margin-bottom:12px}
+.st{background:#fff;border-radius:3px;padding:10px;text-align:center;box-shadow:0 2px 10px rgba(19,35,47,.06)}
+.st b{display:block;font-size:1.2rem}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button{flex:1;background:#fff;color:var(--tinta);border:2px solid var(--linea)}
+.tabs button.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+.f{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+button{font:600 .82rem Inter,sans-serif;border:0;border-radius:3px;padding:10px 12px;cursor:pointer;background:var(--azul);color:#fff}
+button.ok{background:var(--verde-osc)}button.am{background:var(--ambar)}button.no{background:#fff;color:var(--rojo);border:2px solid var(--rojo)}button.l{background:none;color:#fff;padding:4px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{font-size:.7rem;padding:3px 10px;border-radius:3px;font-weight:600;background:var(--azul-cl);color:var(--azul-osc);margin-left:4px;white-space:nowrap}
+.tag.susp{background:var(--rojo-cl);color:var(--rojo)}.tag.lib{background:var(--ambar-cl);color:var(--ambar)}.tag.ok{background:var(--verde-cl);color:var(--verde-osc)}
+.modal{position:fixed;inset:0;background:rgba(10,20,30,.55);display:flex;align-items:flex-end;justify-content:center;z-index:9}
+.sheet{background:#fff;width:100%;max-width:800px;border-radius:3px;padding:18px 18px calc(18px + env(safe-area-inset-bottom));max-height:92dvh;overflow:auto}
+.ev{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--linea);font-size:.82rem}
+.ev time{color:var(--gris);min-width:92px;font-size:.74rem}
+#lock{max-width:320px;margin:18vh auto;text-align:center}
+#lock input{text-align:center;font-size:1.6rem;letter-spacing:.5em;margin:14px 0}
+.err{color:var(--rojo);font-size:.85rem;min-height:1.3em}
+
+/* ===== Tema sobrio: líneas rectas, tonos fríos y luz sutil ===== */
+@keyframes barrido{0%{background-position:-60% 0,0 0}100%{background-position:160% 0,0 0}}
+@keyframes brillo{0%,100%{text-shadow:0 0 0 rgba(30,111,168,0)}50%{text-shadow:0 0 14px rgba(30,111,168,.55)}}
+@keyframes destello{0%,70%{transform:translateX(-120%) skewX(-20deg)}100%{transform:translateX(420%) skewX(-20deg)}}
+header{background:#0d2a40;position:relative}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,transparent,#5cc3ff,transparent) 0 0/40% 100% no-repeat,rgba(255,255,255,.14);animation:barrido 4.5s linear infinite}
+h2{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--gris);font-weight:700}
+.card,.st{box-shadow:none;border:1px solid var(--linea)}
+.card{border-left:3px solid var(--azul)}
+button{position:relative;overflow:hidden;text-transform:uppercase;letter-spacing:.05em;font-size:.72rem;font-weight:700}
+button:hover:not(.l):not(.pick)::after{content:"";position:absolute;top:0;bottom:0;left:0;width:30%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);animation:destello .9s ease-out 1;pointer-events:none}
+input:focus,select:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(30,111,168,.18),0 0 14px rgba(30,111,168,.3)}
+.code{animation:brillo 3.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="app"></div><div id="modal"></div>
+<script>
+/* ===== Datos: mismas claves que index.html (reemplazable por Firebase) ===== */
+const K={users:'b411_users',act:'b411_activity',sol:'b411_requests',ord:'b411_orders',cfg:'b411_admincfg',pin:'b411_adminlock'};
+const DB={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+/* ===== Acceso del administrador =====
+   El PIN queda visible en el código (y el repositorio es público): frena a curiosos, no es seguridad real.
+   Con Firebase se reemplaza por una cuenta de administrador. */
+const PIN='4321'; // <-- CAMBIAR antes de usar (distinto al del panel de pedidos)
+const DIAS_ACTIVIDAD=30; // la actividad más vieja se borra sola (privacidad de menores)
+const TZ='America/Argentina/Cordoba';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase(); // búsqueda sin tildes
+const fh=t=>t?new Date(t).toLocaleString('es-AR',{timeZone:TZ,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+const dia=t=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ}).format(t);   // día en hora de Argentina
+function ahora(){
+  const p=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());
+  const g=t=>p.find(x=>x.type===t).value;
+  return{fecha:`${g('year')}-${g('month')}-${g('day')}`,min:(Number(g('hour'))%24)*60+Number(g('minute'))};
+}
+const ACC={registro:'Se registró',ingreso:'Ingresó',intento_fallido:'Intentos fallidos de ingreso',solicitud_ayuda:'Pidió ayuda (contraseña olvidada)',cierre_sesion:'Cerró sesión',pedido:'Hizo un pedido',cancelacion:'Canceló un pedido',recuperacion:'Creó una contraseña nueva',suspension:'Cuenta suspendida',reactivacion:'Cuenta reactivada',liberacion:'Cuenta liberada por administración'};
+const S={tab:'u',q:'',qr:'',curso:'',est:'',filtroAct:''};
+
+function lockScreen(){
+  $('app').innerHTML=`<div id="lock" class="card"><h1 style="font-size:1.15rem">Buffet 411 · Administración</h1><p class="mut">Ingresá el PIN</p>
+  <input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="PIN"><div class="err" id="err"></div><button style="width:100%" onclick="tryPin()">Entrar</button></div>`;
+  $('pin').addEventListener('keydown',e=>{if(e.key==='Enter')tryPin()});$('pin').focus();
+}
+/* El bloqueo se guarda en el navegador: recargar la página no lo reinicia */
+function tryPin(){
+  const l=DB.get(K.pin,{n:0,hasta:0});
+  if(l.hasta>Date.now()){$('err').textContent='Bloqueado. Esperá '+Math.ceil((l.hasta-Date.now())/1000)+' segundos.';return}
+  if($('pin').value===PIN){DB.set(K.pin,{n:0,hasta:0});sessionStorage.setItem('b411_admin','1');panel();return}
+  l.n++;$('pin').value='';
+  if(l.n>=3){l.n=0;l.hasta=Date.now()+30000;$('err').textContent='Bloqueado 30 segundos.'}else $('err').textContent='PIN incorrecto';
+  DB.set(K.pin,l);
+}
+function salir(){sessionStorage.removeItem('b411_admin');lockScreen()}
+
+/* ===== Datos ===== */
+const users=()=>DB.get(K.users,{});
+const acts=()=>DB.get(K.act,[]);
+const sols=()=>DB.get(K.sol,[]);
+const cfg=()=>DB.get(K.cfg,{maxNoRetirados:3});
+function log(usuario,accion,detalle){const l=acts();l.push({usuario,accion,detalle:detalle||'',ts:Date.now()});DB.set(K.act,l.slice(-3000))}
+/* Falta = pedido que el PERSONAL marcó como "No retiró". Solo cuentan las faltas posteriores a la última reactivación. */
+function faltas(id){
+  const u=users()[id],desde=(u&&u.reactivado)||0;
+  return DB.get(K.ord,[]).filter(o=>o.usuario===id&&o.estado==='noretirado'&&(o.actualizado||o.creado||0)>desde);
+}
+/* Pedidos cuya ventana terminó y nadie marcó si se retiraron: NO cuentan como falta hasta que el personal los defina */
+function sinDefinir(id){
+  const n=ahora();
+  return DB.get(K.ord,[]).filter(o=>o.usuario===id&&(o.estado==='pendiente'||o.estado==='listo')&&(o.fecha<n.fecha||(o.fecha===n.fecha&&n.min>=630)));
+}
+/* Borra actividad vieja y suspende a quien llegó al límite de faltas (corre al abrir el panel, al cambiar el límite y cada minuto) */
+function mantenimiento(){
+  const lim=Date.now()-DIAS_ACTIVIDAD*864e5;DB.set(K.act,acts().filter(a=>a.ts>=lim));
+  const max=cfg().maxNoRetirados,us=users();
+  if(max>0)Object.values(us).forEach(u=>{if(u.estado==='activo'&&faltas(u.usuario).length>=max){u.estado='suspendido';log(u.usuario,'suspension','por faltas: pedidos sin retirar')}});
+  DB.set(K.users,us);
+}
+function setUser(id,fn,accion){const us=users();if(!us[id])return;fn(us[id]);DB.set(K.users,us);if(accion)log(id,accion,'por administración');render();if($('modal').innerHTML)abrir(id)}
+function liberar(id){
+  const u=users()[id];if(!u)return;
+  if(!confirm('¿Verificaste en persona que es el alumno? La cuenta queda liberada para crear una contraseña nueva.'+(u.estado==='suspendido'?'\n\nOjo: sigue SUSPENDIDA. Reactivala aparte si corresponde.':'')))return;
+  setUser(id,x=>{x.liberada=true},'liberacion');
+  DB.set(K.sol,sols().map(r=>r.usuario===id&&r.estado==='pendiente'?{...r,estado:'atendida'}:r));render();
+}
+function eliminar(id){
+  const u=users()[id];if(!u||!confirm('¿Eliminar a '+u.nombre+' (@'+id+')? Se borran su cuenta y su actividad. Los pedidos quedan en el historial.'))return;
+  borrar([id]);cerrar();render();
+}
+function borrar(ids){
+  const us=users();ids.forEach(i=>delete us[i]);DB.set(K.users,us);
+  DB.set(K.act,acts().filter(a=>!ids.includes(a.usuario)));DB.set(K.sol,sols().filter(r=>!ids.includes(r.usuario)));
+}
+/* Para cerrar el año: elimina todos los usuarios del curso filtrado (pide escribir ELIMINAR) */
+function eliminarCurso(){
+  const l=Object.values(users()).filter(u=>u.curso===S.curso);if(!S.curso||!l.length)return;
+  if(prompt('Vas a eliminar '+l.length+' usuario(s) del curso "'+S.curso+'".\nEscribí ELIMINAR para confirmar.')!=='ELIMINAR')return;
+  borrar(l.map(u=>u.usuario));S.curso='';render();
+}
+function descartar(ts){DB.set(K.sol,sols().map(r=>r.ts===ts?{...r,estado:'descartada'}:r));render()}
+function guardarMax(v){const c=cfg();c.maxNoRetirados=Math.max(0,Math.min(20,+v||0));DB.set(K.cfg,c);mantenimiento();render();const e=$('okMax');if(e)e.textContent='Guardado'}
+
+/* ===== Vistas ===== */
+function panel(){mantenimiento();$('app').innerHTML=`<header><img src="logo.png" alt="" onerror="this.style.display='none'"><h1>Administración</h1><button class="l" onclick="salir()">Salir</button></header><div class="wrap" id="w"></div>`;render()}
+function estado(u){return u.estado==='suspendido'?['susp','Suspendido']:u.liberada?['lib','Liberada']:['ok','Activo']}
+function render(){
+  if(!$('w'))return;
+  const us=Object.values(users()),pend=sols().filter(r=>r.estado==='pendiente'),hoy=dia(Date.now());
+  const cursos=[...new Set(us.map(u=>u.curso).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'es',{numeric:true}));
+  const stats=`<div class="grid"><div class="st"><span class="mut">Usuarios</span><b>${us.length}</b></div>
+  <div class="st"><span class="mut">Nuevos hoy</span><b>${us.filter(u=>dia(u.creado)===hoy).length}</b></div>
+  <div class="st"><span class="mut">Activos hoy</span><b>${us.filter(u=>dia(u.ultimo)===hoy).length}</b></div>
+  <div class="st"><span class="mut">Suspendidos</span><b>${us.filter(u=>u.estado==='suspendido').length}</b></div></div>
+  <div class="tabs"><button class="${S.tab==='u'?'on':''}" onclick="S.tab='u';render()">Usuarios</button><button class="${S.tab==='s'?'on':''}" onclick="S.tab='s';render()">Solicitudes${pend.length?' ('+pend.length+')':''}</button></div>`;
+  let body='';
+  if(S.tab==='u'){
+    body=`<div class="f"><input id="q" placeholder="Buscar nombre, usuario o curso" aria-label="Buscar" value="${esc(S.qr)}">
+    <select aria-label="Curso" onchange="S.curso=this.value;render()"><option value="">Cursos</option>${cursos.map(c=>`<option value="${esc(c)}" ${c===S.curso?'selected':''}>${esc(c)}</option>`).join('')}</select>
+    <select aria-label="Estado" onchange="S.est=this.value;render()"><option value="">Estado</option><option value="ok" ${S.est==='ok'?'selected':''}>Activos</option><option value="susp" ${S.est==='susp'?'selected':''}>Suspendidos</option><option value="lib" ${S.est==='lib'?'selected':''}>Liberadas</option></select></div>
+    <div class="card row"><span class="mut">Suspender tras N pedidos que el personal marcó "No retiró" (0 = nunca) <span id="okMax"></span></span><input type="number" min="0" max="20" value="${cfg().maxNoRetirados}" style="width:70px" aria-label="Límite de faltas" onchange="guardarMax(this.value)"></div>
+    <div class="row" style="margin-bottom:10px"><span class="mut" id="cuenta"></span><span class="acts" style="margin:0"><button onclick="csv()">Exportar CSV</button>${S.curso?'<button class="no" onclick="eliminarCurso()">Eliminar curso</button>':''}</span></div><div id="lst"></div>`;
+  }else{
+    body=pend.map(r=>`<div class="card"><div class="row"><b>${esc(r.nombre)}</b><span class="mut">${fh(r.ts)}</span></div><p class="mut">@${esc(r.usuario)} · ${esc(r.curso)} · olvidó su contraseña</p>
+    <div class="acts"><button class="ok" data-a="liberar" data-id="${esc(r.usuario)}">Liberar cuenta</button><button class="no" data-a="descartar" data-ts="${Number(r.ts)}">Descartar</button></div></div>`).join('')||'<div class="card mut">No hay solicitudes pendientes.</div>';
+  }
+  $('w').innerHTML=stats+body;
+  if(S.tab==='u'){pintarUsuarios();$('q').oninput=e=>{S.qr=e.target.value;S.q=norm(e.target.value.trim());pintarUsuarios()}}
+}
+/* Solo se redibuja la lista (no el buscador), así el teclado del celular no parpadea */
+function pintarUsuarios(){
+  const q=S.q,list=Object.values(users()).filter(u=>(!q||[u.nombre,u.usuario,u.curso].some(v=>norm(v).includes(q)))&&(!S.curso||u.curso===S.curso)&&(!S.est||estado(u)[0]===S.est)).sort((a,b)=>(b.ultimo||0)-(a.ultimo||0));
+  $('cuenta').textContent=list.length+' usuario(s)';
+  $('lst').innerHTML=list.map(u=>{const e=estado(u),n=faltas(u.usuario).length;
+    return `<div class="card tap" data-a="abrir" data-id="${esc(u.usuario)}"><div class="row"><b>${esc(u.nombre)}</b><span><span class="tag ${e[0]}">${e[1]}</span>${n?`<span class="tag susp">${n} falta${n>1?'s':''}</span>`:''}</span></div>
+    <p class="mut">@${esc(u.usuario)} · ${esc(u.curso)} · Último ingreso: ${fh(u.ultimo)}</p></div>`}).join('')||'<div class="card mut">No hay usuarios para mostrar.</div>';
+}
+function abrir(id,reset){
+  const u=users()[id];if(!u)return;if(reset)S.filtroAct='';
+  const e=estado(u),nf=faltas(id).length,sd=sinDefinir(id).length;
+  const ped=DB.get(K.ord,[]).filter(o=>o.usuario===id).sort((a,b)=>b.creado-a.creado).slice(0,6);
+  const todas=acts().filter(a=>a.usuario===id),tipos=[...new Set(todas.map(a=>a.accion))],fa=tipos.includes(S.filtroAct)?S.filtroAct:'';
+  const ev=todas.filter(a=>!fa||a.accion===fa).sort((a,b)=>b.ts-a.ts).slice(0,100);
+  const I=esc(id);
+  $('modal').innerHTML=`<div class="modal" data-a="fondo"><div class="sheet">
+  <div class="row"><h2 style="font-size:1.1rem">${esc(u.nombre)}</h2><span class="tag ${e[0]}">${e[1]}</span></div>
+  <p class="mut">@${I} · ${esc(u.curso)} · Registro: ${fh(u.creado)} · Último ingreso: ${fh(u.ultimo)} · Faltas: ${nf}${sd?' · Pedidos sin definir: '+sd:''}</p>
+  <div class="acts">${u.estado==='suspendido'?`<button class="ok" data-a="reactivar" data-id="${I}">Reactivar</button>`:`<button class="no" data-a="suspender" data-id="${I}">Suspender</button>`}
+  ${u.liberada?'':`<button class="am" data-a="liberar" data-id="${I}">Liberar cuenta</button>`}<button class="no" data-a="eliminar" data-id="${I}">Eliminar</button><button data-a="cerrar">Cerrar</button></div>
+  <h3 style="font-size:.95rem;margin:14px 0 4px">Pedidos recientes</h3>
+  ${ped.map(o=>`<div class="ev"><time>${esc(o.fecha)}</time><span><b>${esc(o.codigo)}</b> · ${esc(o.estado)} · $${Number(o.total).toLocaleString('es-AR')}</span></div>`).join('')||'<p class="mut">Sin pedidos.</p>'}
+  <div class="row" style="margin:14px 0 4px"><h3 style="font-size:.95rem">Actividad</h3><select style="width:auto" aria-label="Filtrar actividad" data-a="filtro" data-id="${I}"><option value="">Todas</option>${tipos.map(t=>`<option value="${esc(t)}" ${t===fa?'selected':''}>${esc(ACC[t]||t)}</option>`).join('')}</select></div>
+  ${ev.map(a=>`<div class="ev"><time>${fh(a.ts)}</time><span>${esc(ACC[a.accion]||a.accion)}${a.detalle?' · <span class="mut">'+esc(a.detalle)+'</span>':''}</span></div>`).join('')||'<p class="mut">Sin actividad registrada.</p>'}
+  </div></div>`;
+}
+function cerrar(){$('modal').innerHTML=''}
+/* Los botones llevan los datos en atributos (data-*) y no dentro de código: un dato raro no puede romper la página */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,id=t.dataset.id;
+  if(a==='fondo'&&e.target!==t)return;
+  if(a==='abrir')abrir(id,true);
+  else if(a==='cerrar'||a==='fondo')cerrar();
+  else if(a==='reactivar')setUser(id,u=>{u.estado='activo';u.reactivado=Date.now()},'reactivacion');   // las faltas anteriores ya no cuentan
+  else if(a==='suspender')setUser(id,u=>{u.estado='suspendido'},'suspension');
+  else if(a==='liberar')liberar(id);
+  else if(a==='eliminar')eliminar(id);
+  else if(a==='descartar')descartar(Number(t.dataset.ts));
+});
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.a==='filtro'){S.filtroAct=t.value;abrir(t.dataset.id)}});
+/* CSV seguro: si un texto empieza con = + - @ se le antepone ' para que Excel no lo ejecute como fórmula */
+const cel=v=>{let t=String(v??'');if(/^[=+\-@\t\r]/.test(t))t="'"+t;return'"'+t.replace(/"/g,'""')+'"'};
+function csv(){
+  const r=[['usuario','nombre','curso','estado','registro','ultimo_ingreso','faltas']];
+  Object.values(users()).forEach(u=>r.push([u.usuario,u.nombre,u.curso,estado(u)[1],new Date(u.creado||0).toISOString(),new Date(u.ultimo||0).toISOString(),faltas(u.usuario).length]));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+r.map(x=>x.map(cel).join(',')).join('\n')],{type:'text/csv'}));a.download='usuarios-buffet411.csv';a.click();
+}
+window.addEventListener('storage',()=>{if($('w')&&!$('modal').innerHTML)render()});
+setInterval(()=>{if($('w')){mantenimiento();if(!$('modal').innerHTML)render()}},60000);
+sessionStorage.getItem('b411_admin')?panel():lockScreen();
+</script></body></html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1b7fb8">
+<meta name="theme-color" content="#0d2a40">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="description" content="Pedí tu bizcocho o factura y retiralo en el recreo. I.P.E.T. 411, Noetinger.">
 <link rel="manifest" href="manifest.json">
@@ -15,20 +15,20 @@
 <title>Buffet 411 · IPET 411</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ===== Paleta tomada del logo del IPET 411 ===== */
 :root{
-  --verde:#2e9e4f; --verde-osc:#1f7a3a; --verde-cl:#e6f5ea;
-  --azul:#1b7fb8;  --azul-osc:#135f8c;  --azul-cl:#e4f1f8;
-  --tinta:#13232f; --gris:#5d6b76; --linea:#e1e8ec;
-  --fondo:#f3f7f6; --blanco:#fff;
+  --verde:#1f8f4e; --verde-osc:#17693a; --verde-cl:#e4f3ea;
+  --azul:#1e6fa8;  --azul-osc:#0f4c75;  --azul-cl:#e6eff6;
+  --tinta:#0e1a23; --gris:#54626d; --linea:#d3dae0;
+  --fondo:#edf0f3; --blanco:#fff;
   --ambar:#b7791f; --ambar-cl:#fdf3dc; --rojo:#c53030; --rojo-cl:#fde8e8;
-  --radio:18px;
+  --radio:3px;
   --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--fondo);color:var(--tinta);font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px}
+html,body{margin:0;background:var(--fondo);color:var(--tinta);font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px}
 body{min-height:100dvh}
 [hidden]{display:none!important}
 button{font:inherit;cursor:pointer;border:0}
@@ -40,34 +40,34 @@ input,select{font:inherit}
   background:linear-gradient(180deg,var(--verde-cl) 0,var(--fondo) 280px);min-height:100dvh}
 .hero{text-align:center;margin-bottom:18px}
 .hero img{width:92px;height:auto;display:block;margin:0 auto 8px}
-.hero .logo-fb{display:none;width:72px;height:72px;margin:0 auto 8px;border-radius:20px;background:var(--azul);color:#fff;font-weight:700;font-size:22px;align-items:center;justify-content:center}
+.hero .logo-fb{display:none;width:72px;height:72px;margin:0 auto 8px;border-radius:3px;background:var(--azul);color:#fff;font-weight:700;font-size:22px;align-items:center;justify-content:center}
 .hero h1{margin:0;font-size:26px;font-weight:700}
 .hero p{margin:2px 0 0;color:var(--gris);font-size:13px}
-.card{background:var(--blanco);border-radius:var(--radio);padding:18px;box-shadow:0 2px 14px rgba(19,35,47,.07)}
-.tabs{display:flex;background:var(--fondo);border-radius:12px;padding:4px;margin-bottom:14px}
-.tabs button{flex:1;padding:9px;border-radius:9px;background:none;color:var(--gris);font-weight:600}
+.card{background:var(--blanco);border-radius:3px;padding:18px;box-shadow:0 2px 14px rgba(19,35,47,.07)}
+.tabs{display:flex;background:var(--fondo);border-radius:3px;padding:4px;margin-bottom:14px}
+.tabs button{flex:1;padding:9px;border-radius:3px;background:none;color:var(--gris);font-weight:600}
 .tabs button.on{background:var(--blanco);color:var(--azul-osc);box-shadow:0 1px 4px rgba(0,0,0,.1)}
 label{display:block;font-size:12px;font-weight:600;color:var(--gris);margin:12px 0 5px}
-input[type=text],input[type=password],select{width:100%;padding:12px 14px;border:1.5px solid var(--linea);border-radius:12px;background:#fff;color:var(--tinta);outline:none}
+input[type=text],input[type=password],select{width:100%;padding:12px 14px;border:1.5px solid var(--linea);border-radius:3px;background:#fff;color:var(--tinta);outline:none}
 input:focus,select:focus{border-color:var(--azul)}
 .hint{font-size:11.5px;color:var(--gris);margin-top:4px}
-.btn{display:block;width:100%;padding:14px;border-radius:14px;font-weight:600;color:#fff;background:var(--verde);margin-top:16px;transition:transform .08s}
+.btn{display:block;width:100%;padding:14px;border-radius:3px;font-weight:600;color:#fff;background:var(--verde);margin-top:16px;transition:transform .08s}
 .btn:active{transform:scale(.98)}
 .btn.azul{background:var(--azul)}
 .btn.sec{background:var(--azul-cl);color:var(--azul-osc)}
 .btn.rojo{background:var(--rojo-cl);color:var(--rojo)}
 .btn:disabled{background:#c9d3d9;color:#fff;cursor:not-allowed}
-.msg{font-size:13px;padding:10px 12px;border-radius:10px;margin-top:12px}
+.msg{font-size:13px;padding:10px 12px;border-radius:3px;margin-top:12px}
 .msg.err{background:var(--rojo-cl);color:var(--rojo)}
 .msg.ok{background:var(--verde-cl);color:var(--verde-osc)}
-.aviso{font-size:11.5px;color:var(--gris);background:var(--fondo);border-radius:10px;padding:10px 12px;margin-top:14px;line-height:1.5}
+.aviso{font-size:11.5px;color:var(--gris);background:var(--fondo);border-radius:3px;padding:10px 12px;margin-top:14px;line-height:1.5}
 .link{background:none;color:var(--azul-osc);font-weight:600;text-decoration:underline;padding:8px 0;margin-top:6px}
 
 /* ===== App principal ===== */
 header.top{position:sticky;top:0;z-index:20;background:var(--azul);color:#fff;padding:calc(var(--sat) + 10px) 0 12px}
 header.top .wrap{display:flex;align-items:center;gap:10px}
-header.top img{width:38px;height:44px;object-fit:contain;background:#fff;border-radius:10px;padding:3px}
-header.top .logo-fb2{display:none;width:38px;height:38px;border-radius:10px;background:#fff;color:var(--azul);font-weight:700;font-size:12px;align-items:center;justify-content:center}
+header.top img{width:38px;height:44px;object-fit:contain;background:#fff;border-radius:3px;padding:3px}
+header.top .logo-fb2{display:none;width:38px;height:38px;border-radius:3px;background:#fff;color:var(--azul);font-weight:700;font-size:12px;align-items:center;justify-content:center}
 header.top .t{flex:1;min-width:0}
 header.top .t b{display:block;font-size:15px}
 header.top .t span{font-size:12px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
@@ -75,23 +75,23 @@ main.wrap{padding:14px 16px calc(150px + var(--sab))}
 h2{font-size:15px;margin:18px 0 8px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:0 0 auto;min-width:64px;text-align:center;padding:9px 10px;border-radius:14px;background:#fff;border:1.5px solid var(--linea);color:var(--tinta);line-height:1.2}
+.chip{flex:0 0 auto;min-width:64px;text-align:center;padding:9px 10px;border-radius:3px;background:#fff;border:1.5px solid var(--linea);color:var(--tinta);line-height:1.2}
 .chip small{display:block;font-size:11px;color:var(--gris)}
 .chip b{font-size:16px}
 .chip.on{background:var(--azul);border-color:var(--azul);color:#fff}
 .chip.on small{color:#d6ebf6}
 .chip:disabled{opacity:.4;cursor:not-allowed}
 .turnos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.turno{padding:12px;border-radius:14px;background:#fff;border:1.5px solid var(--linea);text-align:left;color:var(--tinta)}
+.turno{padding:12px;border-radius:3px;background:#fff;border:1.5px solid var(--linea);text-align:left;color:var(--tinta)}
 .turno b{display:block;font-size:14px}
 .turno span{font-size:12px;color:var(--gris)}
 .turno em{display:block;font-style:normal;font-size:11px;color:var(--verde-osc);margin-top:4px;font-weight:600}
 .turno.on{border-color:var(--verde);background:var(--verde-cl)}
 .turno:disabled{opacity:.45;cursor:not-allowed}
-.nota{font-size:12px;color:var(--ambar);background:var(--ambar-cl);border-radius:10px;padding:9px 12px;margin-top:10px;line-height:1.45}
+.nota{font-size:12px;color:var(--ambar);background:var(--ambar-cl);border-radius:3px;padding:9px 12px;margin-top:10px;line-height:1.45}
 
-.prod{display:flex;align-items:center;gap:12px;background:#fff;border-radius:var(--radio);padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.05)}
-.prod .em{width:56px;height:56px;border-radius:16px;background:var(--verde-cl);display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
+.prod{display:flex;align-items:center;gap:12px;background:#fff;border-radius:3px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.05)}
+.prod .em{width:56px;height:56px;border-radius:3px;background:var(--verde-cl);display:flex;align-items:center;justify-content:center;font-size:30px;flex:none}
 .prod .inf{flex:1;min-width:0}
 .prod .inf b{display:block;font-size:15px}
 .prod .pr{color:var(--azul-osc);font-weight:700}
@@ -99,13 +99,13 @@ h2{font-size:15px;margin:18px 0 8px}
 .prod .st.poco{color:var(--ambar);font-weight:600}
 .prod .st.cero{color:var(--rojo);font-weight:600}
 .qty{display:flex;align-items:center;gap:8px}
-.qty button{width:34px;height:34px;border-radius:50%;background:var(--azul-cl);color:var(--azul-osc);font-size:20px;font-weight:700;line-height:1}
+.qty button{width:34px;height:34px;border-radius:3px;background:var(--azul-cl);color:var(--azul-osc);font-size:20px;font-weight:700;line-height:1}
 .qty button:disabled{opacity:.35}
 .qty span{min-width:20px;text-align:center;font-weight:700}
 
 /* carrito flotante */
 #cartBar{position:fixed;left:0;right:0;bottom:calc(64px + var(--sab));z-index:30;padding:0 16px}
-#cartBar button{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:520px;margin:0 auto;padding:14px 18px;border-radius:16px;background:var(--verde);color:#fff;font-weight:600;box-shadow:0 8px 24px rgba(31,122,58,.4)}
+#cartBar button{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:520px;margin:0 auto;padding:14px 18px;border-radius:3px;background:var(--verde);color:#fff;font-weight:600;box-shadow:0 8px 24px rgba(31,122,58,.4)}
 nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--linea);padding-bottom:var(--sab)}
 nav.bottom .in{display:flex;max-width:520px;margin:0 auto}
 nav.bottom button{flex:1;padding:9px 0 8px;background:none;color:var(--gris);font-size:11px;font-weight:600}
@@ -113,10 +113,10 @@ nav.bottom button i{display:block;font-style:normal;font-size:20px}
 nav.bottom button.on{color:var(--azul-osc)}
 
 /* pedidos y estados */
-.ord{background:#fff;border-radius:var(--radio);padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.05)}
+.ord{background:#fff;border-radius:3px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(19,35,47,.05)}
 .ord .r1{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .code{font-weight:700;font-size:22px;letter-spacing:3px;color:var(--azul-osc)}
-.tag{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.tag{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:3px;white-space:nowrap}
 .tag.pendiente{background:var(--ambar-cl);color:var(--ambar)}
 .tag.listo{background:var(--verde-cl);color:var(--verde-osc)}
 .tag.retirado{background:var(--azul-cl);color:var(--azul-osc)}
@@ -130,29 +130,49 @@ nav.bottom button.on{color:var(--azul-osc)}
 
 /* hoja inferior (checkout / ticket) */
 #overlay{position:fixed;inset:0;z-index:60;background:rgba(19,35,47,.55);display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:#fff;width:100%;max-width:520px;border-radius:24px 24px 0 0;padding:18px 18px calc(18px + var(--sab));max-height:92dvh;overflow-y:auto}
+.sheet{background:#fff;width:100%;max-width:520px;border-radius:3px;padding:18px 18px calc(18px + var(--sab));max-height:92dvh;overflow-y:auto}
 .sheet h3{margin:0 0 4px;font-size:18px}
 .line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--linea);font-size:14px}
 .line.tot{font-weight:700;font-size:16px;border:0}
 .pay{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
-.pay button{padding:12px;border-radius:14px;background:#fff;border:1.5px solid var(--linea);color:var(--tinta);font-weight:600;text-align:center}
+.pay button{padding:12px;border-radius:3px;background:#fff;border:1.5px solid var(--linea);color:var(--tinta);font-weight:600;text-align:center}
 .pay button small{display:block;font-weight:400;color:var(--gris);font-size:11px}
 .pay button.on{border-color:var(--verde);background:var(--verde-cl)}
 .pay button:disabled{opacity:.45}
-.alias{background:var(--azul-cl);border-radius:14px;padding:12px;margin-top:10px;font-size:13px;line-height:1.55}
+.alias{background:var(--azul-cl);border-radius:3px;padding:12px;margin-top:10px;font-size:13px;line-height:1.55}
 .alias b{font-size:16px;word-break:break-all}
-.alias .cp{display:inline-block;margin-top:6px;padding:7px 14px;border-radius:10px;background:var(--azul);color:#fff;font-weight:600;font-size:12.5px}
+.alias .cp{display:inline-block;margin-top:6px;padding:7px 14px;border-radius:3px;background:var(--azul);color:#fff;font-weight:600;font-size:12.5px}
 .ticket{text-align:center}
-.ticket .ok{width:54px;height:54px;border-radius:50%;background:var(--verde);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.ticket .ok{width:54px;height:54px;border-radius:3px;background:var(--verde);color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
 .ticket .big{font-size:44px;font-weight:700;letter-spacing:8px;color:var(--azul-osc);margin:8px 0 2px;padding-left:8px}
-.ticket .box{background:var(--fondo);border-radius:14px;padding:12px;margin-top:12px;text-align:left;font-size:13.5px;line-height:1.6}
+.ticket .box{background:var(--fondo);border-radius:3px;padding:12px;margin-top:12px;text-align:left;font-size:13.5px;line-height:1.6}
 
-.inst{background:#fff;border:1.5px solid var(--azul);border-radius:var(--radio);padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.45}
+.inst{background:#fff;border:1.5px solid var(--azul);border-radius:3px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.45}
 .inst b{display:block;font-size:14px;color:var(--azul-osc)}
 .inst .btn{margin-top:10px;padding:11px}
 .inst .link{display:block;margin:2px auto 0}
-#toast{position:fixed;left:50%;bottom:calc(130px + var(--sab));transform:translateX(-50%);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88%;text-align:center}
+#toast{position:fixed;left:50%;bottom:calc(130px + var(--sab));transform:translateX(-50%);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:3px;font-size:13px;z-index:90;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88%;text-align:center}
 #toast.on{opacity:1}
+
+/* ===== Tema sobrio: líneas rectas, tonos fríos y luz sutil ===== */
+@keyframes barrido{0%{background-position:-60% 0,0 0}100%{background-position:160% 0,0 0}}
+@keyframes brillo{0%,100%{text-shadow:0 0 0 rgba(30,111,168,0)}50%{text-shadow:0 0 14px rgba(30,111,168,.55)}}
+@keyframes destello{0%,70%{transform:translateX(-120%) skewX(-20deg)}100%{transform:translateX(420%) skewX(-20deg)}}
+header.top{background:#0d2a40}
+header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,transparent,#5cc3ff,transparent) 0 0/40% 100% no-repeat,rgba(255,255,255,.14);animation:barrido 4.5s linear infinite}
+h2{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--gris);font-weight:700;margin:20px 0 8px}
+.card,.prod,.ord,.turno,.chip,.inst,.pay button{box-shadow:none}
+.card,.prod,.ord{border:1px solid var(--linea)}
+.prod,.ord{border-left:3px solid var(--azul)}
+.btn,#cartBar button{position:relative;overflow:hidden}
+.btn{text-transform:uppercase;letter-spacing:.06em;font-size:12.5px;font-weight:700}
+.btn:not(:disabled)::after,#cartBar button::after{content:"";position:absolute;top:0;bottom:0;left:0;width:26%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),transparent);animation:destello 5s ease-in-out infinite;pointer-events:none}
+input:focus,select:focus{border-color:var(--azul);box-shadow:0 0 0 3px rgba(30,111,168,.18),0 0 14px rgba(30,111,168,.3)}
+.chip.on,.turno.on,.pay button.on{box-shadow:0 0 0 1px var(--azul),0 0 14px rgba(30,111,168,.35)}
+.prod .em{background:var(--azul-cl)}
+.ticket .big,.code{animation:brillo 3.2s ease-in-out infinite}
+nav.bottom button.on{box-shadow:inset 0 2px 0 var(--azul)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -224,9 +244,9 @@ nav.bottom button.on{color:var(--azul-osc)}
   <div id="cartBar" hidden><button id="btnCart" type="button"></button></div>
 
   <nav class="bottom"><div class="in">
-    <button data-tab="pedir" class="on" type="button"><i>🥐</i>Pedir</button>
-    <button data-tab="orders" type="button"><i>🎟️</i>Mis pedidos</button>
-    <button data-tab="info" type="button"><i>ℹ️</i>Info</button>
+    <button data-tab="pedir" class="on" type="button"><i><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></i>Pedir</button>
+    <button data-tab="orders" type="button"><i><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 0 0 8v2h18v-2a2 2 0 0 1 0-8V6H3v2z"/><path d="M14 7v10" stroke-dasharray="2 2"/></svg></i>Mis pedidos</button>
+    <button data-tab="info" type="button"><i><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg></i>Info</button>
   </div></nav>
 </section>
 
@@ -250,7 +270,10 @@ const TURNOS = [
   { id: 2, nombre: '2° recreo', ini: '10:20', fin: '10:30' }
 ];
 const CIERRE_MIN = 10;      // los pedidos de un recreo se cierran 10 min antes de que empiece
-const MAX_UNIDADES = 10;    // tope de unidades por pedido
+const MAX_DIA = 10;         // tope de unidades por alumno por día (suma de todos sus pedidos)
+const INTENTOS_MAX = 5;     // intentos fallidos seguidos antes de bloquear un rato
+const BLOQUEO_SEG = 60;     // duración del bloqueo
+const SESION_HORAS = 24;    // la sesión se cierra tras tantas horas sin usar la app
 const STOCK_BAJO = 5;       // desde acá se muestra "¡Últimas unidades!"
 const ALERTA_FALLOS = 3;    // intentos fallidos para mostrar "Olvidé mi contraseña"
 
@@ -278,7 +301,7 @@ const DB = {
   }
 };
 const K = { usuarios:'b411_users', sesion:'b411_session', pedidos:'b411_orders',
-            config:'b411_config', actividad:'b411_activity', solicitudes:'b411_requests' };
+            config:'b411_config', actividad:'b411_activity', solicitudes:'b411_requests', fallos:'b411_fails' };
 
 const getConfig  = () => DB.get(K.config, CONFIG_BASE);
 const getPedidos = () => DB.get(K.pedidos, []);
@@ -341,14 +364,15 @@ function etiquetaDia(f) {
 function stockLibre(fecha, prod) {
   const usado = getPedidos().filter(o => o.fecha === fecha && o.estado !== 'cancelado')
     .reduce((s, o) => s + o.items.filter(i => i.id === prod.id).reduce((a, i) => a + i.cant, 0), 0);
-  return Math.max(0, prod.stock - usado);
+  const base = prod.stockFecha && prod.stockFecha[fecha] != null ? prod.stockFecha[fecha] : prod.stock;   // stock especial de un día puntual
+  return Math.max(0, base - usado);
 }
 
 /* ---------- ACTIVIDAD (solo acciones importantes, no cada toque) ---------- */
 function registrar(usuario, accion, detalle) {
   const lista = DB.get(K.actividad, []);
   lista.push({ usuario, accion, detalle: detalle || '', ts: Date.now() });
-  DB.set(K.actividad, lista.slice(-1000));
+  DB.set(K.actividad, lista.slice(-3000));
 }
 
 /* ---------- CONTRASEÑAS (hash con sal; en Firebase lo hace Authentication) ---------- */
@@ -407,19 +431,20 @@ $('formIn').addEventListener('submit', async e => {
   const pass = $('inPass').value;
   const msg = t => $('inMsg').innerHTML = `<div class="msg err">${esc(t)}</div>`;
   const u = getUsuarios()[usuario];
+  const fl = DB.get(K.fallos, {}), f = fl[usuario] || { n: 0, hasta: 0 };
+  if (f.hasta > Date.now()) return msg(`Demasiados intentos. Esperá ${Math.ceil((f.hasta - Date.now()) / 1000)} segundos.`);
 
-  if (u && u.estado === 'suspendido') return msg('Tu cuenta está suspendida. Hablá con el buffet o con la dirección.');
-  if (u && u.liberada) return msg('Tu cuenta fue liberada. Creá una contraseña nueva desde "Olvidé mi contraseña".');
-
-  if (!u || (await hashPass(pass, u.sal)) !== u.hash) {
-    S.fallos[usuario] = (S.fallos[usuario] || 0) + 1;
-    if (S.fallos[usuario] >= ALERTA_FALLOS) {
-      $('forgotBox').hidden = false;
-      registrar(usuario, 'intento_fallido', `${S.fallos[usuario]} intentos`);
-    }
+  // Primero se verifica la contraseña; recién después se muestra el estado de la cuenta (no se filtra información)
+  if (!u || u.liberada || (await hashPass(pass, u.sal)) !== u.hash) {
+    f.n++;
+    if (f.n >= INTENTOS_MAX) { f.hasta = Date.now() + BLOQUEO_SEG * 1000; f.n = 0; }
+    fl[usuario] = f; DB.set(K.fallos, fl);
+    if (f.n >= ALERTA_FALLOS || f.hasta) $('forgotBox').hidden = false;
+    if (u && f.n === ALERTA_FALLOS) registrar(usuario, 'intento_fallido', `${f.n} intentos`);   // solo usuarios reales y una vez
     return msg('Usuario o contraseña incorrectos.');
   }
-  S.fallos[usuario] = 0;
+  if (u.estado === 'suspendido') return msg('Tu cuenta está suspendida. Hablá con el buffet o con la dirección.');
+  delete fl[usuario]; DB.set(K.fallos, fl);
   u.ultimo = Date.now();
   const usuarios = getUsuarios(); usuarios[usuario] = u; DB.set(K.usuarios, usuarios);
   registrar(usuario, 'ingreso');
@@ -430,7 +455,18 @@ $('formIn').addEventListener('submit', async e => {
 $('btnForgot').onclick = () => {
   const usuario = $('inUser').value.trim().toLowerCase();
   const u = getUsuarios()[usuario];
-  if (!u) { $('inMsg').innerHTML = '<div class="msg err">Escribí tu nombre de usuario arriba para pedir ayuda.</div>'; return; }
+  if (!usuario) { $('inMsg').innerHTML = '<div class="msg err">Escribí tu nombre de usuario arriba para pedir ayuda.</div>'; return; }
+  if (!u) { $('inMsg').innerHTML = '<div class="msg ok">Listo, avisamos a la administración. Acercate para que verifiquen que sos vos y te liberen la cuenta.</div>'; return; }
+  if (u.liberada) {   // el administrador ya verificó en persona: se crea una contraseña nueva
+    $('inMsg').innerHTML = '<div class="msg ok">Cuenta liberada. Creá tu contraseña nueva:<input id="np1" type="password" placeholder="Contraseña nueva (mínimo 6)" autocomplete="new-password" style="margin-top:8px"><button class="btn azul" id="npOk" type="button" style="margin-top:8px">Guardar contraseña</button></div>';
+    $('npOk').onclick = async () => {
+      const p = $('np1').value; if (p.length < 6) { $('np1').focus(); return; }
+      const us = getUsuarios(), x = us[usuario]; x.sal = nuevaSal(); x.hash = await hashPass(p, x.sal);
+      delete x.liberada; DB.set(K.usuarios, us); registrar(usuario, 'recuperacion');
+      $('inPass').value = ''; $('inMsg').innerHTML = '<div class="msg ok">Listo. Ya podés ingresar con tu contraseña nueva.</div>';
+    };
+    return;
+  }
   const sol = DB.get(K.solicitudes, []);
   if (!sol.some(s => s.usuario === usuario && s.estado === 'pendiente'))
     sol.push({ usuario, nombre: u.nombre, curso: u.curso, ts: Date.now(), estado: 'pendiente' });
@@ -441,11 +477,25 @@ $('btnForgot').onclick = () => {
 
 function iniciarSesion(usuario) {
   S.user = getUsuarios()[usuario];
-  DB.set(K.sesion, usuario);
+  DB.set(K.sesion, { u: usuario, t: Date.now() });
   S.carrito = {}; S.tab = 'pedir'; S.fecha = null; S.turno = null;
   $('authScreen').hidden = true; $('mainScreen').hidden = false;
   $('hdrUser').textContent = `${S.user.nombre} · ${S.user.curso}`;
   cambiarTab('pedir');
+}
+/* Revalida la sesión: vence tras SESION_HORAS sin uso y se cierra si la cuenta fue suspendida */
+function sesionValida() {
+  const g = DB.get(K.sesion, null), us = S.user && getUsuarios()[S.user.usuario];
+  const vencida = !!g && typeof g === 'object' && Date.now() - g.t > SESION_HORAS * 36e5;
+  if (!us || us.estado === 'suspendido' || vencida) {
+    const motivo = us && us.estado === 'suspendido' ? 'Tu cuenta está suspendida. Hablá con el buffet o con la dirección.' : 'Tu sesión venció. Ingresá de nuevo.';
+    DB.set(K.sesion, null); S.user = null; S.carrito = {};
+    $('overlay').hidden = true; $('mainScreen').hidden = true; $('authScreen').hidden = false;
+    $('formIn').reset(); $('forgotBox').hidden = true; mostrarAuth('in'); toast(motivo);
+    return false;
+  }
+  S.user = us; DB.set(K.sesion, { u: us.usuario, t: Date.now() });
+  return true;
 }
 function cerrarSesion() {
   registrar(S.user.usuario, 'cierre_sesion');
@@ -459,6 +509,7 @@ function cerrarSesion() {
    ===================================================================== */
 document.querySelectorAll('nav.bottom button').forEach(b => b.onclick = () => cambiarTab(b.dataset.tab));
 function cambiarTab(tab) {
+  if (S.user && !sesionValida()) return;
   S.tab = tab;
   document.querySelectorAll('nav.bottom button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
   $('viewPedir').hidden = tab !== 'pedir'; $('viewOrders').hidden = tab !== 'orders'; $('viewInfo').hidden = tab !== 'info';
@@ -481,6 +532,7 @@ function renderPedir() {
 
   const cfg = getConfig();
   const prods = cfg.productos.filter(p => p.disponible);
+  const ya = yaPedidas(S.fecha), sl = (v.querySelector('.chips') || {}).scrollLeft || 0;
 
   v.innerHTML = `
     <h2>1 · ¿Qué día retirás?</h2>
@@ -499,6 +551,8 @@ function renderPedir() {
     <div class="nota">⏰ El 2° recreo es la <b>2ª y última oportunidad</b> para retirar: si pediste para el 1°, podés retirar hasta las 10:30. Después de esa hora el buffet no vende más. Los pedidos se cierran ${CIERRE_MIN} min antes de cada recreo.</div>
 
     <h2>3 · Elegí lo que querés</h2>
+    ${ya ? `<div class="hint" style="margin-bottom:8px">Ya pediste ${ya} de ${MAX_DIA} unidades para este día.</div>` : ''}
+    ${prods.length ? '' : '<div class="vacio"><b>🍽️</b>Por ahora no hay productos disponibles.</div>'}
     ${prods.map(p => {
       const libre = stockLibre(S.fecha, p), cant = S.carrito[p.id] || 0;
       const cls = libre === 0 ? 'cero' : libre <= STOCK_BAJO ? 'poco' : '';
@@ -509,9 +563,10 @@ function renderPedir() {
         <div class="qty">
           <button type="button" data-menos="${p.id}" ${cant ? '' : 'disabled'} aria-label="Quitar">−</button>
           <span>${cant}</span>
-          <button type="button" data-mas="${p.id}" ${libre - cant > 0 && totalUnidades() < MAX_UNIDADES ? '' : 'disabled'} aria-label="Agregar">+</button>
+          <button type="button" data-mas="${p.id}" ${libre - cant > 0 && totalUnidades() < cupoDia() ? '' : 'disabled'} aria-label="Agregar">+</button>
         </div></div>`;
     }).join('')}`;
+  const ch = v.querySelector('.chips'); if (ch) ch.scrollLeft = sl;   // la fila de días no vuelve al inicio
 
   v.querySelectorAll('[data-fecha]').forEach(b => b.onclick = () => { S.fecha = b.dataset.fecha; ajustarCarrito(); renderPedir(); actualizarCarrito(); });
   v.querySelectorAll('[data-turno]').forEach(b => b.onclick = () => { S.turno = Number(b.dataset.turno); renderPedir(); });
@@ -521,11 +576,15 @@ function renderPedir() {
     renderPedir(); actualizarCarrito();
   });
 }
-const totalUnidades = () => Object.values(S.carrito).reduce((a, b) => a + b, 0);
+const totalUnidades = () => lineasCarrito().reduce((a, l) => a + l.cant, 0);
+/* Unidades que el alumno ya pidió para un día (pedidos no cancelados) y cupo que le queda */
+const yaPedidas = fecha => getPedidos().filter(o => o.usuario === S.user.usuario && o.fecha === fecha && o.estado !== 'cancelado')
+  .reduce((s, o) => s + o.items.reduce((a, i) => a + i.cant, 0), 0);
+const cupoDia = () => Math.max(0, MAX_DIA - yaPedidas(S.fecha));
 function lineasCarrito() {
   const cfg = getConfig();
   return Object.entries(S.carrito).map(([id, cant]) => {
-    const p = cfg.productos.find(x => x.id === id); return p ? { id, nombre: p.nombre, precio: p.precio, cant } : null;
+    const p = cfg.productos.find(x => x.id === id); return p && p.disponible ? { id, nombre: p.nombre, precio: p.precio, cant } : null;
   }).filter(Boolean);
 }
 const totalCarrito = () => lineasCarrito().reduce((s, l) => s + l.precio * l.cant, 0);
@@ -537,6 +596,8 @@ function ajustarCarrito() {
     const max = p ? stockLibre(S.fecha, p) : 0;
     if (S.carrito[id] > max) { if (max > 0) S.carrito[id] = max; else delete S.carrito[id]; }
   }
+  let exceso = totalUnidades() - cupoDia();   // recorta también al cupo diario del alumno
+  for (const id of Object.keys(S.carrito)) { while (exceso > 0 && S.carrito[id] > 0) { S.carrito[id]--; exceso--; } if (!S.carrito[id]) delete S.carrito[id]; }
 }
 function actualizarCarrito() {
   const n = totalUnidades();
@@ -601,7 +662,9 @@ function generarCodigo() {
 }
 
 function confirmarPedido() {
+  if (!sesionValida()) return;
   const msg = t => { $('resMsg').innerHTML = `<div class="msg err">${esc(t)}</div>`; };
+  if (totalUnidades() + yaPedidas(S.fecha) > MAX_DIA) return msg(`Superás el máximo de ${MAX_DIA} unidades por día.`);
   // Se vuelve a validar todo por si pasó el tiempo o se agotó el stock
   if (!turnoAbierto(S.fecha, S.turno)) return msg('Ese recreo ya cerró los pedidos. Elegí otro horario.');
   const cfg = getConfig();
@@ -696,8 +759,10 @@ function cancelarPedido(id) {
     <button class="btn sec" id="btnNo" type="button">No, volver</button>`);
   $('btnNo').onclick = cerrarOverlay;
   $('btnSi').onclick = () => {
-    o.estado = 'cancelado'; o.actualizado = Date.now(); DB.set(K.pedidos, lista);   // el stock se libera solo
-    registrar(S.user.usuario, 'cancelacion', o.codigo);
+    const l2 = getPedidos(), o2 = l2.find(x => x.id === id);   // se vuelve a leer: el buffet pudo cambiar el estado
+    if (!o2 || o2.estado !== 'pendiente' || !turnoAbierto(o2.fecha, o2.turno)) { cerrarOverlay(); toast('Este pedido ya no se puede cancelar'); renderPedidos(); return; }
+    o2.estado = 'cancelado'; o2.actualizado = Date.now(); DB.set(K.pedidos, l2);   // el stock se libera solo
+    registrar(S.user.usuario, 'cancelacion', o2.codigo);
     cerrarOverlay(); toast('Pedido cancelado'); renderPedidos();
   };
 }
@@ -721,7 +786,7 @@ function renderInfo() {
       <li>Pedí con tu usuario y mostrá el código de 5 caracteres al retirar.</li>
       <li>Podés cancelar mientras el pedido esté pendiente y falten más de ${CIERRE_MIN} minutos para el recreo.</li>
       <li>Si no retirás varias veces, tu cuenta puede suspenderse.</li>
-      <li>Máximo ${MAX_UNIDADES} unidades por pedido.</li></ul></div>`;
+      <li>Máximo ${MAX_DIA} unidades por día.</li></ul></div>`;
   $('btnSalir').onclick = cerrarSesion;
   pintarInstalar();
 }
@@ -752,11 +817,13 @@ function pintarInstalar() {
    ARRANQUE
    ===================================================================== */
 function iniciar() {
-  const guardado = DB.get(K.sesion, null);
-  if (guardado && getUsuarios()[guardado] && getUsuarios()[guardado].estado !== 'suspendido') {
-    S.user = getUsuarios()[guardado];
+  const g = DB.get(K.sesion, null);
+  const nombre = g && (typeof g === 'string' ? g : (Date.now() - g.t < SESION_HORAS * 36e5 ? g.u : null));   // acepta el formato anterior
+  const us = nombre ? getUsuarios()[nombre] : null;
+  if (us && us.estado !== 'suspendido') {
+    S.user = us;
     $('mainScreen').hidden = false; $('hdrUser').textContent = `${S.user.nombre} · ${S.user.curso}`; cambiarTab('pedir');
-  } else { $('authScreen').hidden = false; }
+  } else { DB.set(K.sesion, null); $('authScreen').hidden = false; }
 }
 // Refresca estados cuando el alumno vuelve a la app o cuando el buffet cambia algo
 function refrescar() {
